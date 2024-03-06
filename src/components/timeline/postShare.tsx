@@ -2,26 +2,34 @@
 import { createPost } from "@/functions/createPost";
 import { PostInputsType, postInputs } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { Toaster, toast } from "react-hot-toast"; 
 
 const PostShare = () => {
-  // const { data: session, status } = useSession()
+  
 
   const { register, handleSubmit, formState: { errors } } = useForm<PostInputsType>({ //zodで定義したスキーマから取り出した型を設定する
     resolver: zodResolver(postInputs) //zodで定義したスキーマでバリデーションするため
   });
 
   const onSubmit: SubmitHandler<PostInputsType> = async (data) => { //zodのバリデーションが通った時だけ実行される
+    toast.loading("Sending a post", { id: "post"});//トースト
     console.log(data);
     console.log(process.env.NEXT_PUBLIC_BASE_URL)
-    await createPost(data.description);
+    const isSuccess = await createPost(data.description);
+    if(isSuccess) {
+      toast.success("Success", { id: "post"});//トースト
+    } else {
+      toast.error("Error", { id: "post"});//トースト
+    }
+    
   };
 
   console.log("errors", errors);
 
   return(
     <form className="h-1/6" onSubmit={handleSubmit(onSubmit)}> 
+    <Toaster />
       <textarea id="description" placeholder="what is happening?!" 
       className="w-full h-[65%] px-3 border-0 resize-none focus:outline-0"
       {...register("description")} /*registerの引数をzodで定義したスキーマのプロパティにすると、そのプロパティのバリデーションが適用される*/

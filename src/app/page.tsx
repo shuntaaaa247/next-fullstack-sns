@@ -26,6 +26,7 @@ export default async function Home() {
           <p>user id from session: {session?.user.id} | user id from user: {user.id}</p>
           <p>username: {user.username}</p>
           <p>email: {user.email}</p>
+          <p>accessToken: {user.accessToken}</p>
         </div>
       </div>
       <div className="h-screen w-3/12">

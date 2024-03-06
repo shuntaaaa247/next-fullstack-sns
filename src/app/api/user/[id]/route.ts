@@ -25,7 +25,9 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
         id: targetId
       },
       include: { 
-        posts: true //One To Manyで親(One)から子(many)を参照するには親の子要素配列フィールドをこのように設定してあげる必要がある。
+        posts: true, //One To Manyで親(One)から子(many)を参照するには親の子要素配列フィールドをこのように設定してあげる必要がある。
+        followers: true,
+        following: true
       },
     });
     if(user) {

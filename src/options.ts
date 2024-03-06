@@ -1,7 +1,12 @@
-import type {NextAuthOptions} from "next-auth";
+import type {NextAuthOptions, Session } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
+
+interface Token extends JWT {
+  accessToken?: string;
+}
 
 export const options: NextAuthOptions = {
   //このオプションに関してはこちらを参照 -> https://next-auth.js.org/configuration/options#description-2
@@ -57,7 +62,8 @@ export const options: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt: async ({token, user, account, profile, isNewUser}) => {
+    // jwt: async ({token, user, account, profile, isNewUser}) => {
+    async jwt({token, user, account, profile, isNewUser}) {
       // 注意: トークンをログ出力してはダメです。(本番環境)
       // console.log('in jwt', {user, token, account, profile})
 
@@ -67,14 +73,21 @@ export const options: NextAuthOptions = {
       }
       if (account) {
         token.accessToken = account.access_token
+        console.log("accountがあります！");
+      } else {
+        console.log("accountがありません")
       }
       return token;
     },
-    session: ({session, token, user}) => {
+    // session: ({session, token, user}: { session: Session, token: Token, user: any }) => {
+    async session({session, token, user}: { session: Session, token: Token, user: any }) {
       console.log("in session", {session, token, user});
-      token.accessToken
+      // token.accessToken
       if(token && session.user) {
         session.user.id = token.id; //session.userにidプロパティを付与するのに必要
+
+        session.user.accessToken = token.accessToken
+        console.log("session.user.accessToken", session.user.accessToken)
       }
       return {
         ...session,

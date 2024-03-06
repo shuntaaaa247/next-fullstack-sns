@@ -2,31 +2,37 @@
 
 import { options } from "@/options";
 import { getServerSession } from "next-auth";
+import { getToken } from "next-auth/jwt";
+import { getCsrfToken } from "next-auth/react";
 import { headers } from "next/headers";
 
-
-export const createPost = async (description: string) => {
+export const createPost = async (description: string): Promise<boolean> => {
   const session = await getServerSession(options);
   console.log("idちゃん:", session?.user.id); //vscodeのターミナルに出力される。
 
-  // const headersList = headers();
-
-
+  const headersList = headers();
+  // const csrfToken = await getCsrfToken()
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
     method: "POST",
-    // headers: Object.fromEntries(headers()),
-    headers: { "Content-Type": "application/json" },
-    // headers: headers(),
-    // credentials: "include",
+    headers: { //apiルートでgetServerSessionによるsessionができない。このheadersに問題があるのか。
+      "Content-Type": "application/json", 
+      // "Authorization": `Bearer ${session?.user.accessToken}`
+    },
     body: JSON.stringify({
       description: description,
       autherId: session?.user.id
     })
   });
 
-  // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
-  //   headers: headers()
+  // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, { 
+  //   headers: headers() //GET APIの中だとheadersをheaderes()にするとAPI側でgetServerSessionができる。
   // })
-  const json = await res.json();
-  console.log("json", json);
+  // const json = await res.json();
+  // console.log("json", json);
+
+  if(res.ok) {
+    return true;
+  } else {
+    return false;
+  }
 }

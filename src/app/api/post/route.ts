@@ -3,9 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { getServerSession } from "next-auth";
 import { options } from "@/options";
-import { getSession } from "next-auth/react";
-import { headers } from "next/headers";
-import { NextApiRequest, NextApiResponse } from "next";
 
 //インスタンスを作成
 const prisma = new PrismaClient();
@@ -21,6 +18,7 @@ const connect = async () => { //connect()はexportできない。build時にエ�
   }
 }
 
+//session取得用(試験)
 export const GET = async (req: Request, res: NextResponse) => {
   const session = await getServerSession(options);
   // const session = await getSession({ req })
@@ -30,29 +28,23 @@ export const GET = async (req: Request, res: NextResponse) => {
   return NextResponse.json({ message: "sessionなし" }, { status: 500 })
 }
 
+
+// PostメソッドでgetServerSessionが使えないため、不使用
 export const POST = async (req: NextRequest, res: NextResponse) => {
   const { description, autherId } = await req.json();
-  const session = await getServerSession(options);
+
+  // 知識不足：apiルートのPOSTでgetServerSessionを使用してもsessionを取得できない。GETの場合はheadersをnext-authのheaders()にしたら取得できた。
   // const session = await getServerSession(options);
-
-  // if(!session?.user.id) {
-  //   return NextResponse.json({ message: "sessionなし" }, { status: 200 })
+  // if(session?.user.id !== autherId) {
+  //   console.log("session = ", session)
+  //   return NextResponse.json({ message: "認証を通過しませんでした", description: description, autherId: autherId, token: token }, { status: 401 });
   // }
-
-  // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
-  //   headers: headers()
-  // });
-  // const json = await res.json();
 
   if(!description) {
     return NextResponse.json({ message: "投稿内容を記述してください"}, { status: 400 })
   }
   if(!autherId) {
     return NextResponse.json({ message: "投稿者のIDを送信してください" }, { status: 400 });
-  }
-  if(session?.user.id !== autherId) {
-    console.log("session = ", session)
-    return NextResponse.json({ message: "認証を通過しませんでした", description: description, autherId: autherId }, { status: 401 });
   }
 
   try {
