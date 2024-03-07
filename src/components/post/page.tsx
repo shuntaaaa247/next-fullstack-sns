@@ -1,4 +1,8 @@
 import { PostType } from "@/types";
+import PostContent from "../postContent/page";
+import { useState } from "react";
+import PostOptions from "../postOptions/page";
+
 
 type PostProps = {
   post: PostType
@@ -7,11 +11,10 @@ type PostProps = {
 const Post = ({ post }: PostProps) => {
   return (
     <div>
-      <hr />
-      <p>id: {post.id}</p>
-      <p>createdAt: {String(post.createdAt)}</p>
-      <p>autherId: {post.autherId}</p>
-      <p>description: {post.description}</p>
+      <div className="pl-3 border-t hover:bg-stone-50">
+        <PostContent post={post}/>
+        <PostOptions />
+      </div>
     </div>
   )
 }
