@@ -4,24 +4,11 @@ import PostShare from "../components/timeline/postShare";
 import type { PostType } from "@/types";
 import { headers } from "next/headers";
 import Post from "@/components/post/page";
+import LeftBar from "@/components/leftBar/leftbar";
+import RightBar from "@/components/rightBar/rightBar";
+import  fetchUser from "@/functions/fetchUser";
+import fetchTimeline from "@/functions/fetchTimeline";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-
-const fetchUser = async (userId: string) => {
-  const res = await fetch(`http://localhost:3000/api/user/${userId}`);
-  const json = await res.json();
-  const user = json.user;
-  return user;
-}
-
-const fetchTimeline = async (userId: string): Promise<PostType[]> => {
-  const res = await fetch(`${baseUrl}/api/post/${userId}/timeline`, {
-    headers: headers() //バックエンド(GETメソッド)でSession情報取得するには、headers: headers()を追加
-  });
-  const json = await res.json();
-  const timelinePosts: PostType[] = json.timelinePosts;
-  return timelinePosts;
-}
 
 export default async function Home() {
   const session = await getServerSession(options);
@@ -34,9 +21,7 @@ export default async function Home() {
 
   return (
     <main className="flex justify-center">
-      <div className="h-screen w-3/12 fixed left-0 border-r-2">
-        <p className="text-center">Leftbar</p>
-      </div>
+      <LeftBar />
       <div className="h-screen w-6/12 flex flex-col">
         <PostShare />
         <div className="h-5/6">
@@ -49,14 +34,7 @@ export default async function Home() {
           })}
         </div>
       </div>
-      <div className="h-screen w-3/12 fixed right-0 border-l-2">
-        <p className="text-center">Rightbar</p>
-        <h1>ログイン中のユーザー</h1>
-        <p>user id from session: {session?.user.id} | user id from user: {user.id}</p>
-        <p>username: {user.username}</p>
-        <p>email: {user.email}</p>
-        <p>accessToken: {user.accessToken}</p>
-      </div>
+      <RightBar />
     </main>
   );
 }

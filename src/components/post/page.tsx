@@ -1,7 +1,7 @@
 import { PostType } from "@/types";
-import PostContent from "../postContent/page";
+import PostContent from "../postContent/postContent";
 import { useState } from "react";
-import PostOptions from "../postOptions/page";
+import PostOptions from "../postOptions/postOptions";
 
 
 type PostProps = {
