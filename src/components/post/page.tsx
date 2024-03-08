@@ -11,7 +11,7 @@ type PostProps = {
 const Post = ({ post }: PostProps) => {
   return (
     <div>
-      <div className="pl-3 border-t hover:bg-stone-50">
+      <div className="pl-3 border-b hover:bg-stone-50">
         <PostContent post={post}/>
         <PostOptions />
       </div>
