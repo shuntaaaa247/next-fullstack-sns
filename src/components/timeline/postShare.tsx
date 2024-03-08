@@ -4,9 +4,10 @@ import { PostInputsType, postInputs } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast"; 
+import { useRouter } from 'next/navigation';
 
 const PostShare = () => {
-  
+  const router = useRouter();
 
   const { register, handleSubmit, formState: { errors } } = useForm<PostInputsType>({ //zodで定義したスキーマから取り出した型を設定する
     resolver: zodResolver(postInputs) //zodで定義したスキーマでバリデーションするため
@@ -22,7 +23,8 @@ const PostShare = () => {
     } else {
       toast.error("Error", { id: "post"});//トースト
     }
-    
+    router.push("/");
+    router.refresh();
   };
 
   console.log("errors", errors);
