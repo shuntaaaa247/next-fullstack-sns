@@ -2,11 +2,10 @@ import { options } from "@/options";
 import { getServerSession } from "next-auth";
 import PostShare from "../components/timeline/postShare";
 import type { PostType } from "@/types";
-import { headers } from "next/headers";
-import Post from "@/components/post/page";
+import Post from "@/components/post/post";
 import LeftBar from "@/components/leftBar/leftbar";
 import RightBar from "@/components/rightBar/rightBar";
-import  fetchUser from "@/functions/fetchUser";
+import fetchUser from "@/functions/fetchUser";
 import fetchTimeline from "@/functions/fetchTimeline";
 
 
@@ -28,7 +27,7 @@ export default async function Home() {
           { timelinePosts.map((timelinePost: PostType) => {
             return (
               <div key={timelinePost.id}>
-                <Post post={timelinePost}/>
+                <Post post={timelinePost} from={"/app"}/>
               </div>
             )
           })}

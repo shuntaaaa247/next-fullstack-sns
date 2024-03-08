@@ -10,14 +10,15 @@ const PostOptions = () => {
   const handleLike = () => {
     isLiked ? setLikeCount(likeConunt - 1) : setLikeCount(likeConunt + 1);
     setIsLiked(!isLiked);
-    alert("いいねが押されました")
   }
 
   return(
-    <div>
+    <div className="">
       { isLiked 
-      ? <button onClick={handleLike} className="mb-1"><FavoriteIcon className="text-rose-500 hover:text-rose-700"/><span className="">{ likeConunt }</span></button>
-      : <button onClick={handleLike} className="mb-1"><FavoriteBorderIcon className="hover:text-rose-500"/><span className="">{ likeConunt }</span></button> }
+      ? <button onClick={handleLike} className="mb-1"><FavoriteIcon className="text-rose-500 hover:text-rose-700"/></button>
+      : <button onClick={handleLike} className="mb-1"><FavoriteBorderIcon className="hover:text-rose-500"/></button> 
+      }
+      <span className="">{ likeConunt }</span>
     </div>
   )
 }
