@@ -16,13 +16,19 @@ export type PostInputsType = z.infer<typeof postInputs>;
 export type PostType = {
   id: number,
   description: string,
-  autherId: number
-  createdAt: Date
-  updatedAt: Date
+  autherId: number,
+  likes: LikeType[],
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export type FollowType = {
   followerId: Number,
   followingId: Number,
   createdAt: Date
+}
+
+export type LikeType = {
+  toPostId: Number,
+  fromUserId: Number
 }

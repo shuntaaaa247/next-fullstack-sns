@@ -19,6 +19,9 @@ export const GET = async (req: NextRequest, { params }: { params: Params }) => {
     const post: PostType | null = await prisma.post.findUnique({
       where: {
         id: Number(params.id)
+      },
+      include: {
+        likes: true
       }
     })
     if (!post) {

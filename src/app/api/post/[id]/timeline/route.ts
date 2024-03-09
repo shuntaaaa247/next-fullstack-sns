@@ -26,6 +26,9 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
     const myPosts: PostType[] = await prisma.post.findMany({
       where: {
         autherId: Number(targetId)
+      },
+      include: {
+        likes: true
       }
     })
     timelinePosts.push(...myPosts)
@@ -34,6 +37,9 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
       const posts: PostType[] = await prisma.post.findMany({
         where: {
           autherId: Number(follow.followingId)
+        },
+        include: {
+          likes: true
         }
       })
       timelinePosts.push(...posts)

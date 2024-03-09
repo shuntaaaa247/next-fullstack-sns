@@ -1,7 +1,6 @@
 import { PostType } from "@/types";
 import PostContent from "../postContent/postContent";
 import PostOptions from "../postOptions/postOptions";
-import Link from "next/link";
 
 type PostProps = {
   post: PostType, //投稿の型
@@ -14,7 +13,7 @@ const Post = ({ post, from }: PostProps) => {
     return (
       <div className="pl-3 border-b">
         <PostContent post={post} from={from}/>
-        <PostOptions />
+        <PostOptions postId={post.id} likes={post.likes}/>
       </div>
     )
   } else {
@@ -22,7 +21,7 @@ const Post = ({ post, from }: PostProps) => {
       <div className="pl-3 border-b">
         <div className="mx-5">
           <PostContent post={post} from={from}/>
-          <PostOptions />
+          <PostOptions postId={post.id} likes={post.likes}/>
         </div>
       </div>
     )

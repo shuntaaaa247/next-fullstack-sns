@@ -23,6 +23,7 @@ model User {
   posts Post[] //Postとのリレーションに必要。User(一)対Post(多)なので、Post[]と配列型にする。
   followers Follow[] @relation("FollowTo")
   following Follow[] @relation("FollowFrom")
+  likes Like[]
 }
 
 model Post {
@@ -30,6 +31,7 @@ model Post {
   description String @db.VarChar(140) //最大140文字
   auther User @relation(fields: [autherId], references: [id], onDelete: Cascade) //Userとのリレーションに必要。fieldsには自身のモデルのフィールド、referencesには相手のモデルのフィールド。onDelete: CascadeでUser(親)が削除された時、Post(子)も削除される。このフィールドは実際にはデータベースのフィールドにはならず、fieldsに設定したフィールドがデータベースに保存される
   autherId Int
+  likes Like[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -42,4 +44,12 @@ model Follow {
   createdAt  DateTime @default(now())
 
   @@id([followerId, followingId]) //複合主キー
+}
+
+model Like {
+  toPost Post @relation(fields: [toPostId], references: [id], onDelete: Cascade)
+  toPostId Int
+  fromUser User @relation(fields: [fromUserId], references: [id], onDelete: Cascade)
+  fromUserId Int
+  @@id([toPostId, fromUserId]) //複合主キー
 }
