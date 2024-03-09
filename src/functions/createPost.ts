@@ -2,8 +2,6 @@
 
 import { options } from "@/options";
 import { getServerSession } from "next-auth";
-import { getToken } from "next-auth/jwt";
-import { getCsrfToken } from "next-auth/react";
 import { headers } from "next/headers";
 
 export const createPost = async (description: string): Promise<boolean> => {
