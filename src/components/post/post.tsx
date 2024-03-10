@@ -1,6 +1,6 @@
 import { PostType } from "@/types";
-import PostContent from "../postContent/postContent";
-import PostOptions from "../postOptions/postOptions";
+import PostContent from "./postContent";
+import PostOptions from "./postOptions";
 
 type PostProps = {
   post: PostType, //投稿の型

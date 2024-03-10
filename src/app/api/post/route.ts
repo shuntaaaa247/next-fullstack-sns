@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { getServerSession } from "next-auth";
 import { options } from "@/options";
+import { PostType } from "@/types";
 
 //インスタンスを作成
 const prisma = new PrismaClient();
@@ -29,7 +30,7 @@ export const GET = async (req: Request, res: NextResponse) => {
 }
 
 
-// PostメソッドでgetServerSessionが使えないため、不使用
+
 export const POST = async (req: NextRequest, res: NextResponse) => {
   const { description, autherId } = await req.json();
 
@@ -62,4 +63,49 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   } finally {
     await prisma.$disconnect();
   }
+}
+
+
+
+export const DELETE = async (req: NextRequest) => {
+  const session = await getServerSession(options);
+  const searchParams = req.nextUrl.searchParams
+  const postId = searchParams.get("postId")
+  const userId = searchParams.get("userId")
+
+  if(!postId) {
+    return NextResponse.json({ mmessage: "投稿のIDがありません" }, { status: 400 })
+  }
+
+  try {
+    await connect();
+    const post: PostType | null  = await prisma.post.findUnique({
+      where: {
+        id: Number(postId)
+      },
+      include: {
+        likes: true
+      }
+    })
+    if(!post){
+      return NextResponse.json({ method: "投稿がありません" }, { status: 404 });
+    }
+    if(post.autherId !== Number(session?.user.id)) {
+      return NextResponse.json({ message: "権限がありません" }, { status: 401 });
+    }
+    const deletedPost = await prisma.post.delete({
+      where: {
+        id: Number(postId)
+      }
+    })
+    return NextResponse.json({ message: "削除成功", deletedPost: deletedPost }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json({ message: "削除失敗" }, { status: 500 });
+  } finally {
+    await prisma.$disconnect()
+  }
+  // if(String(session?.user.id) !== String(userId)) {
+  //   return NextResponse.json({ message: "権限がありません", userId: userId, sessionUserId: session?.user.id, session: session }, { status: 401 })
+  // } 
+  // return NextResponse.json({ message: "削除できる状態にあります🥳" }, { status: 200 })
 }

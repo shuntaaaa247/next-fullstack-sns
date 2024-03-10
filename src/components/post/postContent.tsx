@@ -2,7 +2,7 @@ import { options } from "@/options";
 import { getServerSession } from "next-auth";
 import { PostType } from "@/types";
 import Link from "next/link";
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import MoreButton from "./moreButton";
 
 type PostContentProps = {
   post: PostType
@@ -22,13 +22,13 @@ const PostContent = async ({ post, from }: PostContentProps) => {
       <div className="flex justify-start my-1">
         <p className="font-base text-lg">{auther.username}</p>
         <p className="text-stone-500 text-base font-light ml-3">{createdAt.toLocaleDateString()}</p>
-        { Number(session?.user.id) === post.autherId ? <span className="ml-auto mr-2"><MoreHorizIcon className="text-stone-500 hover:bg-stone-200 rounded-full"/></span> : <></>}
+        { Number(session?.user.id) === post.autherId ? <MoreButton postId={post.id} /> : <></>}
       </div>
       <div className="">
       <p>{post.description}</p>
       </div>
     { from === "/app" 
-    ? <Link href={`/post_detail/${post.id}`}><span className="mt-1 text-blue-500 hover:underline">show more...</span></Link>
+    ? <Link href={`/post_detail/${post.id}`}><span className="mt-1 text-blue-500 hover:underline">show detail</span></Link>
     : <></> 
     }
     </div>
