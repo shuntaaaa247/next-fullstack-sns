@@ -31,6 +31,7 @@ export default async function Home() {
               </div>
             )
           })}
+          <div className="h-1/5"></div>
         </div>
       </div>
       <RightBar />

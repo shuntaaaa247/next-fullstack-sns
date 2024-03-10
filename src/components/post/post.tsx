@@ -7,8 +7,7 @@ type PostProps = {
   from: string //どのコンポーネント(ページ)から遷移してきたか
 }
 
-const Post = ({ post, from }: PostProps) => {
-
+const Post = async ({ post, from }: PostProps) => {
   if(from === "/app") {
     return (
       <div className="pl-3 border-b">
