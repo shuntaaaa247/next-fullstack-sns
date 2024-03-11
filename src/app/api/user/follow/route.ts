@@ -60,5 +60,19 @@ export const DELETE = async (req: Request) => {
     return NextResponse.json({ message: "権限がありません" }, { status: 401 })
   }
 
-  return NextResponse.json({ message: "削除できる" }, { status: 200 });
+  try {
+    await connect();
+    const unFollow = await prisma.follow.delete({
+      where: {
+        followerId_followingId: {
+          followerId: Number(followerId),
+          followingId: Number(followingId) 
+        }
+      }
+    })
+    return NextResponse.json({ message: "削除成功", unFollow: unFollow }, { status: 200 })
+  } catch(err) {
+    console.log(err);
+    return NextResponse.json({ message: "削除失敗" }, { status: 500 });
+  }
 }

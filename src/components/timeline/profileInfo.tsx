@@ -1,6 +1,6 @@
 "use client"
 
-import { followUser } from "@/functions/followUser";
+import { followUser, unFollowUser } from "@/functions/followUser";
 import { useEffect, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import MiniLoading from "../loading/miniLoading";
@@ -31,7 +31,14 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
     setIsLoading(true);
     if(isFollowing) {
       toast.loading("unfollowing", { id: "unfollowing"});
-
+      const result: boolean = await unFollowUser(signedInUserId, user.id);
+      if(result) {
+        setFollowersLength(followersLength - 1);
+        setIsFollowing(!isFollowing)
+        toast.success("Success", { id: "unfollowing" })
+      } else {
+        toast.error("Error", { id: "unfollowing" })
+      }
     } else {
       toast.loading("following", { id: "following"});
       const result: boolean = await followUser(signedInUserId, user.id);
@@ -75,7 +82,3 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
 }
 
 export default ProfileInfo
-
-const ProfileInfoContent = () => {
-  
-}
