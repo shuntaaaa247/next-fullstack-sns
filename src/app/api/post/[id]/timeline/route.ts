@@ -29,7 +29,10 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
       },
       include: {
         likes: true
-      }
+      },
+      orderBy: {
+        createdAt: 'desc' 
+      },
     })
     timelinePosts.push(...myPosts)
 
@@ -40,10 +43,17 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
         },
         include: {
           likes: true
-        }
+        },
+        orderBy: { 
+          createdAt: 'desc' 
+        },
       })
       timelinePosts.push(...posts)
     }))
+
+    timelinePosts.sort(
+      (x, y) => (y.createdAt.getTime()) - (x.createdAt.getTime()),
+    )
     
     return NextResponse.json({ message: "取得成功", timelinePosts: timelinePosts }, { status: 200 });
   } catch(err) {

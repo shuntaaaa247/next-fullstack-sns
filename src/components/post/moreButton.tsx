@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation';
 import { usePathname } from "next/navigation";
 import { Toaster, toast } from "react-hot-toast"; 
 import Modal from 'react-modal'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import ClearIcon from '@mui/icons-material/Clear';
 import deletePost from '@/functions/deletePost';
+import moreHorizontalIcon from "../../../public/svg/more-horizontal-fromgpt.svg"
+import clearIcon from "../../../public/svg/clear-icon-fromgpt.svg"
+import Image from 'next/image';
 
 const customStyles = {
   content: {
@@ -51,9 +51,10 @@ const MoreButton = ({ postId }: MoreButtonProps) => {
   
   return(
     <div className='ml-auto'>
-      <button className="mr-2">
-        <MoreHorizIcon onClick={openModal} className="text-stone-500 hover:bg-stone-200 rounded-full"/>
-      </button> 
+      <div className="mr-2">
+        <Image onClick={openModal} src={moreHorizontalIcon} alt="more" width={25} height={25} className='rounded-full hover:bg-stone-100 cursor-pointer'/>
+
+      </div> 
       <Modal
         contentLabel="Example Modal"
         isOpen={modalIsOpen}
@@ -61,7 +62,7 @@ const MoreButton = ({ postId }: MoreButtonProps) => {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
       >
-        <button onClick={closeModal}><ClearIcon /></button>
+        <Image onClick={closeModal} src={clearIcon} alt="clear" width={25} height={25} className='p-1 rounded-full hover:bg-stone-100 cursor-pointer'/>
         <MorePostOptionsModal postId={postId}/>
       </Modal>
     </div>
@@ -96,14 +97,14 @@ const MorePostOptionsModal = ({ postId }: MorePostOptionsModalProps) => {
         className='mt-4 w-[95%] py-1 border rounded-full border-rose-500' 
         disabled
         >
-          <span className='text-rose-500 font-semibold'><DeleteOutlineOutlinedIcon/>投稿を削除する</span>
+          <span className='text-rose-500 font-semibold'>投稿を削除する</span>
         </button>
 
       : <button 
         onClick={async() => {await _deletePost()}} 
         className='mt-4 w-[95%] py-1 border rounded-full border-rose-500 hover:bg-rose-100' 
         >
-          <span className='text-rose-500 font-semibold'><DeleteOutlineOutlinedIcon/>投稿を削除する</span>
+          <span className='text-rose-500 font-semibold'>投稿を削除する</span>
         </button>
       }
     </div>

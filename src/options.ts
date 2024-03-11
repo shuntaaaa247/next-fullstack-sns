@@ -73,21 +73,21 @@ export const options: NextAuthOptions = {
       }
       if (account) {
         token.accessToken = account.access_token
-        console.log("accountがあります！");
+        // console.log("accountがあります！");
       } else {
-        console.log("accountがありません")
+        // console.log("accountがありません")
       }
       return token;
     },
     // session: ({session, token, user}: { session: Session, token: Token, user: any }) => {
     async session({session, token, user}: { session: Session, token: Token, user: any }) {
-      console.log("in session", {session, token, user});
+      // console.log("in session", {session, token, user});
       // token.accessToken
       if(token && session.user) {
         session.user.id = token.id; //session.userにidプロパティを付与するのに必要
 
         session.user.accessToken = token.accessToken
-        console.log("session.user.accessToken", session.user.accessToken)
+        // console.log("session.user.accessToken", session.user.accessToken)
       }
       return {
         ...session,

@@ -1,4 +1,6 @@
+import { options } from "@/options";
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 //インスタンスを作成
@@ -41,4 +43,22 @@ export const POST = async (req: Request) => {
   } finally {
     await prisma.$disconnect();
   }
+}
+
+//フォロー解除用のAPI
+export const DELETE = async (req: Request) => {
+  const session = await getServerSession(options);
+  const { followerId, followingId } = await req.json();
+
+  if(!followerId) {
+    return NextResponse.json({ message: "followerIdがありません" }, { status: 400 })
+  }
+  if(!followingId) {
+    return NextResponse.json({ message: "followingIdがありません" }, { status: 400 })
+  }
+  if(String(followerId) !== String(session?.user.id)) {
+    return NextResponse.json({ message: "権限がありません" }, { status: 401 })
+  }
+
+  return NextResponse.json({ message: "削除できる" }, { status: 200 });
 }

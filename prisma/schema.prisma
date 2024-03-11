@@ -18,6 +18,7 @@ model User {
   username String @unique
   email String @unique
   password String
+  introduction String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   posts Post[] //Postとのリレーションに必要。User(一)対Post(多)なので、Post[]と配列型にする。

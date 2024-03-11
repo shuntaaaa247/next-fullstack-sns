@@ -51,7 +51,8 @@ const LeftBar = () => {
         onRequestClose={closeModal}
       >
         <div className='flex h-[12%]'>
-          <button><ClearIcon onClick={closeModal} fontSize="large" className='p-1 rounded-full hover:bg-stone-100 font-light'/></button>
+          {/* <button  onClick={closeModal} className='p-1 rounded-full hover:bg-stone-100 font-light'><ClearIcon/></button> */}
+          <button  onClick={closeModal}><ClearIcon/></button>
         </div>
           <PostShareModal closeModalFunc={closeModal}/>
       </Modal>

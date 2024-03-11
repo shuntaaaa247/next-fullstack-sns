@@ -20,7 +20,7 @@ const PostContent = async ({ post, from }: PostContentProps) => {
   return (
     <div className="mb-1">
       <div className="flex justify-start my-1">
-        <p className="font-base text-lg">{auther.username}</p>
+        <p className="font-base text-lg hover:underline"><Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/profile/${auther.id}`}>{auther.username}</Link></p>
         <p className="text-stone-500 text-base font-light ml-3">{createdAt.toLocaleDateString()}</p>
         { Number(session?.user.id) === post.autherId ? <MoreButton postId={post.id} /> : <></>}
       </div>

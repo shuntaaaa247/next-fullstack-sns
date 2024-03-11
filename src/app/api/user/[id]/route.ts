@@ -32,7 +32,6 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
       },
     });
     if(user) {
-      console.log("ここだよ〜〜〜〜");
       const { password, ...other } = user;
       return NextResponse.json({ message: "取得完了", user: other }, { status: 200 });
       // return NextResponse.json({ message: "取得完了", posts: posts }, { status: 200 });

@@ -1,0 +1,9 @@
+<svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+  <!-- 縦横100×100の座標、左上の座標が(0,0)の状態 -->
+  <path fill="red" stroke="pink" stroke-width="1"
+    d="M 10,30
+       A 20,20 0,0,1 50,30 
+       A 20,20 0,0,1 90,30 
+       Q 90,60 50,80 
+       Q 10,60 10,30 z" /> 
+</svg>
