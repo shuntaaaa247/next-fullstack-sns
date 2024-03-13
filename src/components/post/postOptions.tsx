@@ -77,7 +77,7 @@ const PostOptionContent = ({ postId, likes }: PostOptionsProps) => {
       ? 
       // <button onClick={() => handleLike()} className="mb-1 text-rose-500 hover:text-rose-700"><FavoriteIcon /></button>
       // <button onClick={() => handleLike()}><FavoriteIcon /></button>
-      <button onClick={() => handleLike()}>
+      <button onClick={() => handleLike()} className="mb-1">
         <Image src={likeFillIcon} alt="like" width={27} height={27}/>
       </button> 
       : 

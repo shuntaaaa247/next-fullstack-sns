@@ -13,6 +13,18 @@ export const postInputs = z.object({
 
 export type PostInputsType = z.infer<typeof postInputs>;
 
+export const profileInputs = z.object({
+  username: z
+    .string()
+    .min(1, {
+      message: "必須項目です。"
+    }),
+  introduction: z
+    .string()
+})
+
+export type ProfileInputsType = z.infer<typeof profileInputs>
+
 export type PostType = {
   id: number,
   description: string,
@@ -32,3 +44,4 @@ export type LikeType = {
   toPostId: Number,
   fromUserId: Number
 }
+

@@ -13,9 +13,17 @@ const Profile = async ({ params }: { params: Params }) => {
   const session = await getServerSession(options);
   const user = await fetchUser(params.id);
 
+  if(!session) {
+    return(
+      <div>
+      サインインしてください
+    </div>
+    )
+  }
+
   return(
     <main className="flex justify-center">
-      <LeftBar />
+      <LeftBar userId={session?.user.id}/>
       <div className="h-screen w-6/12 flex flex-col">
         { user && session ? 
         <div>
@@ -33,16 +41,3 @@ const Profile = async ({ params }: { params: Params }) => {
 }
 
 export default Profile
-
-// type MiddleProfileInfoProps = {
-//   user: any
-// }
-
-// "use client"
-// const MiddleProfileInfo = ({ user }: MiddleProfileInfoProps) => {
-//   return(
-//     <SessionProvider>
-//       <ProfileInfo user={user}/>
-//     </SessionProvider>
-//   )
-// }
