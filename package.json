@@ -25,6 +25,7 @@
     "react-hook-form": "^7.50.1",
     "react-hot-toast": "^2.4.1",
     "react-modal": "^3.16.1",
+    "swr": "^2.2.5",
     "zod": "^3.22.4"
   },
   "devDependencies": {

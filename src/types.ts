@@ -25,6 +25,16 @@ export const profileInputs = z.object({
 
 export type ProfileInputsType = z.infer<typeof profileInputs>
 
+export const searchInputs = z.object({
+  text: z
+    .string()
+    .min(1, {
+      message: "必須項目です。"
+    })
+})
+
+export type SearchInputsType = z.infer<typeof searchInputs>
+
 export type PostType = {
   id: number,
   description: string,

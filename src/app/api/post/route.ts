@@ -104,8 +104,4 @@ export const DELETE = async (req: NextRequest) => {
   } finally {
     await prisma.$disconnect()
   }
-  // if(String(session?.user.id) !== String(userId)) {
-  //   return NextResponse.json({ message: "権限がありません", userId: userId, sessionUserId: session?.user.id, session: session }, { status: 401 })
-  // } 
-  // return NextResponse.json({ message: "削除できる状態にあります🥳" }, { status: 200 })
 }

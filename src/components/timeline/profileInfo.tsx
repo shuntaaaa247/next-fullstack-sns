@@ -11,6 +11,7 @@ import editProfile from "@/functions/editProfile";
 import { profileInputs, ProfileInputsType } from "@/types";
 import ClearIcon from '@mui/icons-material/Clear';
 import { useRouter } from "next/navigation";
+import UserList from "../user/userList";
 
 type ProfileInfoProps = {
   user: any,
@@ -57,7 +58,6 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
 
   useEffect(() => {
     for (const follower of user.followers) {
-      console.log("followerId:", follower.followerId)
       if(String(follower.followerId) === String(signedInUserId)) {
         setIsFollowing(true);
         break;
@@ -120,7 +120,7 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
           { isLoading || signedInUserId === user.id 
           ? 
             <button 
-            onClick={() => openModal()}
+            onClick={() => {openModal()}}
             className="mr-3 px-4 py-1 text-blue-500 font-medium rounded-full border-2 border-blue-500 hover:text-white hover:bg-blue-500"
             >
               Edit Profile
@@ -139,8 +139,16 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
         </div>
         <p className="mt-2 text-lg">{user.introduction}</p>
         <div className="mt-3">
-          <button className="hover:underline">following {followingLength}</button>
-          <button className="ml-3 hover:underline">followers {followersLength}</button>
+          <button 
+          onClick={() => {router.push(`/following_list/${user.id}`)}} 
+          className="hover:underline">
+            following {followingLength}
+          </button>
+          <button 
+          onClick={() => {router.push(`/followers_list/${user.id}`)}} 
+          className="ml-3 hover:underline"
+          >followers {followersLength}
+          </button>
         </div>
       </div>
       <Modal

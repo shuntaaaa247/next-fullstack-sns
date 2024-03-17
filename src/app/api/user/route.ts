@@ -1,23 +1,28 @@
-import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
-import { getServerSession } from "next-auth";
-import { options } from "@/options";
-import { getSession } from "next-auth/react";
-import { headers } from "next/headers";
-import { NextApiRequest, NextApiResponse } from "next";
-import { getToken } from "next-auth/jwt";
+// import { PrismaClient } from "@prisma/client";
+// import { NextRequest, NextResponse } from "next/server";
 
-//インスタンスを作成
-const prisma = new PrismaClient();
+// //インスタンスを作成
+// const prisma = new PrismaClient();
 
-//データベースに接続
-const connect = async () => { //connect()はexportできない。build時にエラーになる
-  try {
-    //prismaでデータベースに接続
-    prisma.$connect;
-  } catch(err) {
-    console.log(err);
-    return Error("データベースに接続できませんでした")
-  }
-}
+// export const GET = async (req: NextRequest) => {
+//   try {
+//     await prisma.$connect()
+//     const body = await req.json();
+//     const idList: string[] = body.idList
+//     const userList = [];
+//     for (const id of idList) {
+//       const user = await prisma.user.findUnique({
+//         where: {
+//           id: Number(id)
+//         }
+//       })
+//       userList.push(user);
+//     }
+//     return NextResponse.json({ message: "取得成功", users: userList }, { status: 200 })
+//   } catch(err) {
+//     console.log(err);
+//     return NextResponse.json({ message: "取得失敗" }, { status: 500 })
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// }

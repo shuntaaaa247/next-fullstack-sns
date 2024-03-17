@@ -90,7 +90,8 @@ export const PUT = async (req: NextRequest, { params }: { params: Params }) => {
         introduction: newIntroduction ?? user.introduction
       }
     })
-    return NextResponse.json({ message: "編集完了", updatedUser: updatedUser }, { status: 200 })
+    const { password, ...other } = updatedUser;
+    return NextResponse.json({ message: "編集完了", updatedUser: other }, { status: 200 })
   } catch(err) {
     console.log(err);
     return NextResponse.json({ message: "編集失敗" }, { status: 500 })

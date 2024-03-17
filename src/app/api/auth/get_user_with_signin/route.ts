@@ -41,7 +41,8 @@ export const POST = async(req: Request) => {
     });
 
     if( user && await bcrypt.compare(password, user?.password)) { //bcrypt.compare("平文のパスワード", "ハッシュ化済みのパスワード")
-      return NextResponse.json({ user: user }, { status: 200 });
+      const { password, ...other } = user;
+      return NextResponse.json({ user: other }, { status: 200 });
     } else {
       return NextResponse.json({ message: "パスワードまたはメールアドレスが違います" }, { status: 401 });
     }

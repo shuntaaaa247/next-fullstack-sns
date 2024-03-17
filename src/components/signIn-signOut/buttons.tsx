@@ -18,7 +18,6 @@ export const SigninButton = () => {
   const { register, handleSubmit } = useForm<Inputs>();
 
   const onSubmitFunc: SubmitHandler<Inputs> = async (data) => {
-    console.log("data = ", data);
     const result = await signIn("user", { //第一引数はoptions.tsで指定したcredentialsProvaiderのid
       redirect: false,
       email: data.email,

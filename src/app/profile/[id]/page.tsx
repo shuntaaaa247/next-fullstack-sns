@@ -10,8 +10,50 @@ import Loading from "@/components/loading/Loading";
 import ProfileInfo from "@/components/timeline/profileInfo";
 
 const Profile = async ({ params }: { params: Params }) => {
+  return(
+    <Suspense fallback={<Loading />}>
+      <ProfileContent userId={ params.id } />
+    </Suspense>
+  )
+  // const session = await getServerSession(options);
+  // const user = await fetchUser(params.id);
+
+  // if(!session) {
+  //   return(
+  //     <div>
+  //     サインインしてください
+  //   </div>
+  //   )
+  // }
+
+  // return(
+  //   <main className="flex justify-center">
+  //     <LeftBar userId={session?.user.id}/>
+  //     <div className="h-screen w-6/12 flex flex-col">
+  //       { user && session ? 
+  //       <div>
+  //         <ProfileInfo user={user} signedInUserId={Number(session?.user.id)} />
+  //           <Suspense fallback={<Loading />}>
+  //         <Timeline userId={user.id}/>
+  //         </Suspense>
+  //       </div> :
+  //       <p>ユーザーが見つかりませんでした</p> 
+  //       }
+  //     </div>
+  //     <RightBar />
+  //   </main>
+  // )
+}
+
+export default Profile
+
+type ProfileContentProps = {
+  userId: string
+}
+
+const ProfileContent = async ({ userId }: ProfileContentProps) => {
   const session = await getServerSession(options);
-  const user = await fetchUser(params.id);
+  const user = await fetchUser(userId);
 
   if(!session) {
     return(
@@ -39,5 +81,3 @@ const Profile = async ({ params }: { params: Params }) => {
     </main>
   )
 }
-
-export default Profile

@@ -17,6 +17,60 @@ const connect = async () => { //connect()はexportできない。build時にエ�
   }
 }
 
+//フォロワー、フォロー中のユーザーを取得すつAPI
+export const GET = async (req: NextRequest) => {
+  const userId: number | null = Number(req.nextUrl.searchParams.get("id"))
+  const mode: string | null = req.nextUrl.searchParams.get("mode")
+  const users = [];
+  try {
+    await prisma.$connect()
+    const targetUser = await prisma.user.findUnique({
+      where: {
+        id: userId
+      },
+      include: {
+        following: true,
+        followers: true
+      }
+    })
+    if(!targetUser) {
+      return NextResponse.json({ message: "ユーザーが見つかりませんでした" }, { status: 404 })
+    }
+    const { username: targetUsername, ...other } = targetUser
+    if (mode === "following") {
+      for(const follow of targetUser?.following) {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: follow.followingId
+          }
+        })
+        if(user) {
+          const { password, ...other } = user
+          users.push(other);
+        }
+      }
+    } else if(mode === "followers") {
+      for(const follow of targetUser?.followers) {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: follow.followerId
+          }
+        })
+        if(user) {
+          const { password, ...other } = user
+          users.push(other);
+        }
+      }
+    }
+    return NextResponse.json({ message: "取得完了", targetUsername: targetUsername, users: users }, { status: 200 })
+  } catch(err) {
+    console.log(err);
+    return NextResponse.json({ message: "取得失敗" }, { status: 500 })
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 //フォロー用のAPI
 export const POST = async (req: Request) => {
   const { followerId, followingId } = await req.json();

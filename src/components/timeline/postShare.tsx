@@ -42,7 +42,7 @@ const PostShare = () => {
       ></textarea>
       { errors.description?.message && (
         <p className="error-message">
-          {errors.description?.message}
+          {/* {errors.description?.message} エラーメッセージは表示させない*/} 
         </p>
       )}
       <div className="flex justify-between border-y">

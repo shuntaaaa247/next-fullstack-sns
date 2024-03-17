@@ -40,8 +40,8 @@ export const POST = async (req: Request, res: NextResponse) => {
         password: await bcrypt.hash(password, 10)
       }
     })
-
-    return NextResponse.json({ message: "作成完了", user: user }, { status: 200 });
+    const { password: fetchedPassword, ...other } = user;
+    return NextResponse.json({ message: "作成完了", user: other }, { status: 200 });
   } catch(err) {
     console.log(err);
     const userN = await prisma.user.findUnique({
