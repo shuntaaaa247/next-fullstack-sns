@@ -7,17 +7,6 @@ import { options } from "@/options";
 //インスタンスを作成
 const prisma = new PrismaClient();
 
-// //データベースに接続
-// const connect = async () => { //connect()はexportできない。build時にエラーになる
-//   try {
-//     //prismaでデータベースに接続
-//     prisma.$connect;
-//   } catch(err) {
-//     console.log(err);
-//     return Error("データベースに接続できませんでした")
-//   }
-// }
-
 export const GET = async (req: Request, { params }: { params: Params }) => {
   try {
     const targetId: number = Number(params.id);
@@ -49,7 +38,7 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
 }
 
 export const PUT = async (req: NextRequest, { params }: { params: Params }) => {
-  const { newUsername, newIntroduction } = await req.json();
+  const { newUsername, newIntroduction, newAvatar } = await req.json();
   const session = await getServerSession(options);
   let user;
 
@@ -75,19 +64,37 @@ export const PUT = async (req: NextRequest, { params }: { params: Params }) => {
     return NextResponse.json({ message: "更新内容がありません" }, { status: 400 });
   }
 
-  if(!session || String(session.user.id) !== String(params.id) ) {
-    return NextResponse.json({ message: "権限がありません", sessionUserId: session?.user.id, paramsId: params.id }, { status: 401})
+  if(!session || !session.user.id) {
+    return NextResponse.json({ message: "認証されていません" }, { status: 401 })
+  }
+
+  if(String(session.user.id) !== String(params.id) ) {
+    return NextResponse.json({ message: "権限がありません", sessionUserId: session?.user.id, paramsId: params.id }, { status: 403})
   }
 
   try {
     await prisma.$connect();
+    if(!newAvatar) {
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: Number(params.id)
+        },
+        data: {
+          username: newUsername ?? user.username,
+          introduction: newIntroduction ?? user.introduction,
+        }
+      })
+      const { password, ...other } = updatedUser;
+      return NextResponse.json({ message: "編集完了", updatedUser: other }, { status: 200 })
+    }
     const updatedUser = await prisma.user.update({
       where: {
         id: Number(params.id)
       },
       data: {
         username: newUsername ?? user.username,
-        introduction: newIntroduction ?? user.introduction
+        introduction: newIntroduction ?? user.introduction,
+        avatar: newAvatar ?? user.avatar
       }
     })
     const { password, ...other } = updatedUser;

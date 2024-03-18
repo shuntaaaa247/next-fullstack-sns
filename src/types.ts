@@ -20,7 +20,19 @@ export const profileInputs = z.object({
       message: "必須項目です。"
     }),
   introduction: z
-    .string()
+    .string(),
+    
+  avatar: z //アバター画像追加
+    .custom<FileList>()
+    .refine((files) => files.length <= 1, {
+      message: "画像ファイルは1枚までです。"
+    })
+    .refine((files) => Array.from(files).every((file) => file.size < 500_000), {
+      message: "ファイルサイズは5MBまでです。"
+    })
+    .refine((files) => Array.from(files).every((file) => ["image/png", "image/jpg", "image/jpeg"].includes(file.type)), {
+      message: "選択できるのはpng, jpg, jpegファイルです。"
+    })
 })
 
 export type ProfileInputsType = z.infer<typeof profileInputs>

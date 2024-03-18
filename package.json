@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.11",
     "@mui/material": "^5.15.11",
     "@prisma/client": "^5.10.2",
+    "@supabase/supabase-js": "^2.39.8",
     "@types/bcrypt": "^5.0.2",
     "@types/react-modal": "^3.16.3",
     "bcrypt": "^5.1.1",
@@ -26,12 +27,14 @@
     "react-hot-toast": "^2.4.1",
     "react-modal": "^3.16.1",
     "swr": "^2.2.5",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",

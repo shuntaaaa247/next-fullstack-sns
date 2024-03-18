@@ -110,8 +110,11 @@ export const DELETE = async (req: Request) => {
   if(!followingId) {
     return NextResponse.json({ message: "followingIdがありません" }, { status: 400 })
   }
+  if(!session || !session.user.id) {
+    return NextResponse.json({ message: "認証されていません" }, { status: 401 })
+  }
   if(String(followerId) !== String(session?.user.id)) {
-    return NextResponse.json({ message: "権限がありません" }, { status: 401 })
+    return NextResponse.json({ message: "権限がありません" }, { status: 403 })
   }
 
   try {

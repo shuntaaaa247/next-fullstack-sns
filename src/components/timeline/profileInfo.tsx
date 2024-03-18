@@ -1,17 +1,19 @@
 "use client"
 
-import { followUser, unFollowUser } from "@/functions/followUser";
+import { useRouter } from "next/navigation";
+import Image from 'next/image'
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Modal from 'react-modal'
 import { Toaster, toast } from "react-hot-toast";
+import { followUser, unFollowUser } from "@/functions/followUser";
+import { zodResolver } from "@hookform/resolvers/zod";
 import MiniLoading from "../loading/miniLoading";
 import editProfile from "@/functions/editProfile";
 import { profileInputs, ProfileInputsType } from "@/types";
 import ClearIcon from '@mui/icons-material/Clear';
-import { useRouter } from "next/navigation";
-import UserList from "../user/userList";
+import initial_avatar from "../../../public/initial_avatar.png"
+import { supabase } from "@/supabase";
 
 type ProfileInfoProps = {
   user: any,
@@ -43,6 +45,9 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
   const [followersLength, setFollowersLength] = useState<number>(user.followers.length)
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>();
+  const [preview, setPreview] = useState<string>("");
+  const [userAvatar, setUserAvatar] = useState<string>("");
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileInputsType>({ //zodで定義したスキーマから取り出した型を設定する
     resolver: zodResolver(profileInputs), //zodで定義したスキーマでバリデーションするため
@@ -50,13 +55,38 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
   });
 
   const onSubmit: SubmitHandler<ProfileInputsType> = async (data) => {
-    await editMyProfile(data.username, data.introduction);
+    await editMyProfile(data.username, data.introduction, file, user.avatar);
     closeModal();
     router.push(`/profile/${signedInUserId}`)
     router.refresh();
   }
 
+  const handleChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      setPreview(window.URL.createObjectURL(e.target.files[0]))
+    } else {
+      setFile(null);
+      setPreview("");
+    }
+  }
+
   useEffect(() => {
+    const getAvatar = async () => {
+      if(user.avatar) {
+        try {
+          const { data } = await supabase
+            .storage
+            .from("avatars")
+            .getPublicUrl(user.avatar)
+
+          setUserAvatar(data.publicUrl)
+        } catch(err) {
+          console.log(err)
+        }
+      }
+    }
+    getAvatar()
     for (const follower of user.followers) {
       if(String(follower.followerId) === String(signedInUserId)) {
         setIsFollowing(true);
@@ -64,7 +94,9 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
       }
     }
     setIsLoading(false);
-  }, []);
+  }, [user]);
+
+  
 
   const follow = async () => {
     setIsLoading(true);
@@ -92,12 +124,14 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
     setIsLoading(false);
   }
 
-  const editMyProfile = async (newUsername: string, newIntroduction: string) => {
-    const result = await editProfile(user.id, newUsername,  newIntroduction);
+  const editMyProfile = async (newUsername: string, newIntroduction: string, file: File | null | undefined, prevFileName: string | null) => {
+    const result = await editProfile(user.id, newUsername,  newIntroduction, file, prevFileName);
     if(result) {
     } else {
       alert("編集できませんでした");
     }
+    setFile(null);
+    setPreview("");
   }
 
   function openModal() {
@@ -115,20 +149,30 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
     <div className="py-3 border-b">
       <div className="ml-5">
         <div className="flex justify-between">
-          <h1 className="text-3xl font-semibold">{user.username}</h1>
+          { isLoading 
+          ? <MiniLoading />
+          : 
+          <div className="relative h-[100px] w-[100px]">
+            { user.avatar 
+            ? <Image src={userAvatar} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
+            : <Image src={initial_avatar} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
+            }
+          </div>
+          }
+          <h1 className="mt-3 text-3xl font-semibold">{user.username}</h1>
           { isLoading ? <div className="mr-14 mt-1"><MiniLoading /></div> : <></>}
           { isLoading || signedInUserId === user.id 
           ? 
             <button 
             onClick={() => {openModal()}}
-            className="mr-3 px-4 py-1 text-blue-500 font-medium rounded-full border-2 border-blue-500 hover:text-white hover:bg-blue-500"
+            className="mt-3 mr-3 px-4 py-1 h-10 text-blue-500 font-medium rounded-full border-2 border-blue-500 hover:text-white hover:bg-blue-500"
             >
               Edit Profile
             </button>
           : 
             <button 
             onClick={() => follow()}
-            className="mr-3 px-4 py-1 text-blue-500 font-medium rounded-full border-2 border-blue-500 hover:text-white hover:bg-blue-500"
+            className="mt-3 mr-3 px-4 py-1 h-10 text-blue-500 font-medium rounded-full border-2 border-blue-500 hover:text-white hover:bg-blue-500"
             >
             { isFollowing 
             ? <>unfollow</>
@@ -166,6 +210,14 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
               </button>
             </div>
             <form className="flex flex-col mt-3 mx-5 flex-auto" onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-2">
+                <label htmlFor="icon">
+                  <div className="relative h-[100px] w-[100px]">
+                    <Image src={preview ? preview : user.avatar ? userAvatar : initial_avatar} fill objectFit="cover" alt="initial avatar" className="rounded-full border-2 hover:border-4"/>
+                  </div>
+                </label>
+                <input id="icon" type="file" accept=".png, .jpg, jpeg" {...register("avatar")} onChange={handleChangeFile} className="hidden"/>
+              </div>
               <div className="flex flex-col mb-3 rounded-md border-2 border-slate-300">
                 <label htmlFor="username" className="px-3 py-2 text-sm">username</label>
                 <input type="text" id="username" className="px-3 pb-2 text-xl outline-none" {...register("username")} />
@@ -181,7 +233,7 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
                 </p>
               </div>
               <button 
-              className="ml-auto px-3 mt-4 rounded-full border-2 border-blue-500 text-lg text-blue-500 hover:bg-blue-500 hover:text-white"
+              className="ml-auto px-3 my-4 rounded-full border-2 border-blue-500 text-lg text-blue-500 hover:bg-blue-500 hover:text-white"
               >
                 Save
               </button>
