@@ -196,7 +196,7 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
         </div>
       </div>
       <Modal
-        contentLabel="Example Modal"
+        contentLabel="Edit Profile Modal"
         isOpen={modalIsOpen}
         style={customStyles}
         onAfterOpen={afterOpenModal}

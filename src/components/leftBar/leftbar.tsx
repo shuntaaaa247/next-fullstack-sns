@@ -102,7 +102,7 @@ const LeftBar = ({ userId }: LeftBarProps) => {
           {/* <button  onClick={closeModal} className='p-1 rounded-full hover:bg-stone-100 font-light'><ClearIcon/></button> */}
           <button  onClick={closeModal}><ClearIcon/></button>
         </div>
-          <PostShareModal closeModalFunc={closeModal}/>
+          <PostShareModal closeModalFunc={closeModal} userId={userId}/>
       </Modal>
     </div>
   )

@@ -56,7 +56,7 @@ const MoreButton = ({ postId }: MoreButtonProps) => {
 
       </div> 
       <Modal
-        contentLabel="Example Modal"
+        contentLabel="More Modal"
         isOpen={modalIsOpen}
         style={customStyles}
         onAfterOpen={afterOpenModal}

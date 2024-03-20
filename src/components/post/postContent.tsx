@@ -5,7 +5,8 @@ import Link from "next/link";
 import MoreButton from "./moreButton";
 import { supabase } from "@/supabase";
 import Image from "next/image";
-import initial_avatar from "../../../public/initial_avatar.png"
+import initial_avatar from "../../../public/initial_avatar.png";
+import PostPhoto from "./postPhoto";
 
 type PostContentProps = {
   post: PostType
@@ -20,6 +21,7 @@ const PostContent = async ({ post, from }: PostContentProps) => {
   const auther = json.user;
   const createdAt = new Date(post.createdAt);
   let autherAvatarImageUrl:string | null = null;
+  let photoUrl: string | null = null;
 
   if(auther.avatar) {
     try {
@@ -30,6 +32,18 @@ const PostContent = async ({ post, from }: PostContentProps) => {
       
       autherAvatarImageUrl = data.publicUrl;
     } catch(err) {
+      console.log(err);
+    }
+  }
+
+  if(post.photo) {
+    try {
+      const { data } = await supabase
+        .storage
+        .from("photos")
+        .getPublicUrl(post.photo)
+      photoUrl = data.publicUrl
+    } catch (err) {
       console.log(err);
     }
   }
@@ -50,6 +64,10 @@ const PostContent = async ({ post, from }: PostContentProps) => {
       </div>
       <div className="">
       <p>{post.description}</p>
+      { post.photo && photoUrl 
+        ? <PostPhoto photoUrl={photoUrl}/>
+        : <></> 
+      }
       </div>
     { from === "/app" 
     ? <Link href={`/post_detail/${post.id}`}><span className="mt-1 text-blue-500 hover:underline">show detail</span></Link>

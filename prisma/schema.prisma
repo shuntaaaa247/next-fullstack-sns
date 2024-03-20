@@ -31,6 +31,7 @@ model User {
 model Post {
   id Int @id @default(autoincrement())
   description String @db.VarChar(140) //最大140文字
+  photo String?
   auther User @relation(fields: [autherId], references: [id], onDelete: Cascade) //Userとのリレーションに必要。fieldsには自身のモデルのフィールド、referencesには相手のモデルのフィールド。onDelete: CascadeでUser(親)が削除された時、Post(子)も削除される。このフィールドは実際にはデータベースのフィールドにはならず、fieldsに設定したフィールドがデータベースに保存される
   autherId Int
   likes Like[]

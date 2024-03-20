@@ -1,15 +1,20 @@
-"use server"
+import { supabase } from "@/supabase";
+import { v4 as uuidv4 } from 'uuid'
 
-import { options } from "@/options";
-import { getServerSession } from "next-auth";
-import { headers } from "next/headers";
+export const createPost = async (userId: string, description: string, file: File | null | undefined): Promise<boolean> => {
+  let fileName: string = "";
+  if(file) {
+    fileName = `img_${uuidv4()}_${file.name}`;
+    const { data, error } = await supabase 
+      .storage
+      .from("photos")
+      .upload(fileName, file); 
+    if(error) {
+      console.error(error.message);
+      return false
+    }
+  }
 
-export const createPost = async (description: string): Promise<boolean> => {
-  const session = await getServerSession(options);
-  console.log("idちゃん:", session?.user.id); //vscodeのターミナルに出力される。
-
-  const headersList = headers();
-  // const csrfToken = await getCsrfToken()
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
     method: "POST",
     headers: { //apiルートでgetServerSessionによるsessionができない。このheadersに問題があるのか。
@@ -18,15 +23,11 @@ export const createPost = async (description: string): Promise<boolean> => {
     },
     body: JSON.stringify({
       description: description,
-      autherId: session?.user.id
+      autherId: userId,
+      // autherId: session?.user.id,
+      photo: fileName ?? null
     })
   });
-
-  // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, { 
-  //   headers: headers() //GET APIの中だとheadersをheaderes()にするとAPI側でgetServerSessionができる。
-  // })
-  // const json = await res.json();
-  // console.log("json", json);
 
   if(res.ok) {
     return true;

@@ -32,7 +32,7 @@ export const GET = async (req: Request, res: NextResponse) => {
 
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
-  const { description, autherId } = await req.json();
+  const { description, autherId, photo } = await req.json();
 
   // 知識不足：apiルートのPOSTでgetServerSessionを使用してもsessionを取得できない。GETの場合はheadersをnext-authのheaders()にしたら取得できた。
   // const session = await getServerSession(options);
@@ -53,7 +53,8 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     const post = await prisma.post.create({
       data: {
         description: description,
-        autherId: autherId
+        autherId: autherId,
+        photo: photo
       }
     })
     return NextResponse.json({ message: "投稿完了", post: post }, { status: 200 })

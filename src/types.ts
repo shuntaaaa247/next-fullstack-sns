@@ -8,6 +8,18 @@ export const postInputs = z.object({
     })
     .max(140, {
       message: "投稿は140文字以内です。" //投稿が140文字を超えてしまった場合のメッセージ
+    }),
+  
+  photo: z //画像投稿機能を追加
+    .custom<FileList>()
+    .refine((files) => files.length <= 1, {
+      message: "画像ファイルは1枚までです。"
+    })
+    .refine((files) => Array.from(files).every((file) => file.size < 500_000), {
+      message: "ファイルサイズは5MBまでです。"
+    })
+    .refine((files) => Array.from(files).every((file) => ["image/png", "image/jpg", "image/jpeg"].includes(file.type)), {
+      message: "選択できるのはpng, jpg, jpegファイルです。"
     })
 })
 
@@ -51,6 +63,7 @@ export type PostType = {
   id: number,
   description: string,
   autherId: number,
+  photo: string | null,
   likes: LikeType[],
   createdAt: Date,
   updatedAt: Date,
