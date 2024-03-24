@@ -47,7 +47,6 @@ const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>();
   const [preview, setPreview] = useState<string>("");
-  // const [userAvatar, setUserAvatar] = useState<string>("");
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileInputsType>({ //zodで定義したスキーマから取り出した型を設定する
     resolver: zodResolver(profileInputs), //zodで定義したスキーマでバリデーションするため
@@ -187,9 +186,11 @@ const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
             onClick={() => follow()}
             className="mt-3 mr-3 px-4 py-1 h-10 text-blue-500 font-medium rounded-full border-2 border-blue-500 hover:text-white hover:bg-blue-500"
             >
-            { isFollowing 
-            ? <>unfollow</>
-            : <>follow</>
+            { isLoading
+            ? <></>
+            : isFollowing 
+              ? <>unfollow</>
+              : <>follow</>
             }
             </button>
           }

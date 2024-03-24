@@ -49,9 +49,6 @@ const PostShare = ({ userId }: PostShareProps) => {
     }
   }
 
-
-  console.log("errors", errors);
-
   return(
     <form className="h-0 sm:h-1/6 invisible sm:visible" onSubmit={handleSubmit(onSubmit)}> 
     <Toaster />

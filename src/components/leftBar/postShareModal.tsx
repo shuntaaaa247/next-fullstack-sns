@@ -27,8 +27,6 @@ const PostShareModal = ({ closeModalFunc, userId }: PostShareModalProps) => {
 
   const onSubmit: SubmitHandler<PostInputsType> = async (data) => { //zodのバリデーションが通った時だけ実行される
     toast.loading("Sending a post", { id: "postFromModal"});//トースト
-    console.log(data);
-    console.log(process.env.NEXT_PUBLIC_BASE_URL)
     const isSuccess = await createPost(userId, data.description, fileOnModal);
     if(isSuccess) {
       toast.success("Success", { id: "postFromModal"});//トースト
@@ -49,8 +47,6 @@ const PostShareModal = ({ closeModalFunc, userId }: PostShareModalProps) => {
       setPreviewOnModal("");
     }
   }
-
-  console.log("errors", errors);
 
   return(
     <form className="h-[88%] flex-col" onSubmit={handleSubmit(onSubmit)}> 

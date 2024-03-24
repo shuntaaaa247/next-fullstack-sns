@@ -76,10 +76,6 @@ export const POST = async (req: Request) => {
   const session = await getServerSession(options);
   const { followerId, followingId } = await req.json();
 
-  console.log("=========================")
-  console.log(session);
-  console.log("=========================")
-
   if(!session) {
     return NextResponse.json({ message: "認証されていません" }, { status: 401 })
   }

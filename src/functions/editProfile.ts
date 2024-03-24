@@ -10,8 +10,7 @@ const editProfile = async (id: string, newUsername: string | null, newIntroducti
       .from("avatars")
       .upload(fileName, file); 
     if(uploadError) {
-      alert("エラーが発生しました" + uploadError.message);
-      console.error(uploadError.message);
+      alert("エラーが発生しました");
       return false
     }
   }
@@ -21,8 +20,7 @@ const editProfile = async (id: string, newUsername: string | null, newIntroducti
       .from("avatars")
       .remove([prevFileName])
     if(removeError) {
-      alert("エラーが発生しました" + removeError.message);
-      console.error(removeError.message)
+      alert("エラーが発生しました");
       return false
     }
   }
@@ -36,8 +34,6 @@ const editProfile = async (id: string, newUsername: string | null, newIntroducti
         newAvatar: null
       })
     })
-    const json = await res.json()
-    console.log("json:", json);
     return res.ok
   }
   
@@ -49,8 +45,6 @@ const editProfile = async (id: string, newUsername: string | null, newIntroducti
       newAvatar: fileName
     })
   })
-  const json = await res.json()
-  console.log("json:", json);
   return res.ok
 }
 

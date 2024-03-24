@@ -9,6 +9,7 @@ import initial_avatar from "../../../public/initial_avatar.png"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
 import { deleteUser } from "@/functions/deleteUser"
+import MiniLoading from "../loading/miniLoading"
 
 const customStyles = {
   content: {
@@ -35,6 +36,7 @@ const UserButton = ({ userId }: UserButtonProps) => {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [isCheckForDelete, setIsCheckForDelete] = useState<boolean>(false);
   const [isCheckForSignout, setIsCheckForSignout] = useState<boolean>(false);
+  const [isLoadingForTransition, setIsLoadingForTransition] = useState<boolean>(false);
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
 
   useEffect(() => {
@@ -44,21 +46,23 @@ const UserButton = ({ userId }: UserButtonProps) => {
     if(windowInnerWidth < 640) {
       customStyles.content.top = "60px";
       customStyles.content.left = "0px";
-      // customStyles.content.height = windowInnerHeight ? `${windowInnerHeight}px` : "100%";
       customStyles.content.height = "100%";
     }
   }, [])
 
   const handleDeleteUser = async () => {
+    setIsLoadingForTransition(true);
     const isSuccess: boolean = await deleteUser(userId);
     if(isSuccess) {
       signOut();
     } else {
       alert("エラー");
+      setIsLoadingForTransition(false);
     }
   }
 
   const handleSignOut = () => {
+    setIsLoadingForTransition(true);
     signOut()
   }
 
@@ -123,7 +127,7 @@ const UserButton = ({ userId }: UserButtonProps) => {
             </p>
             { isCheckForDelete 
             ?
-              <button className="hover:underline" onClick={handleDeleteUser}>本当に削除する</button>
+              isLoadingForTransition ? <MiniLoading /> : <button className="hover:underline" onClick={handleDeleteUser}>本当に削除する</button>
             :
               <></>
             }
@@ -133,7 +137,7 @@ const UserButton = ({ userId }: UserButtonProps) => {
           <div>
             <p className="text-rose-600 font-semibold text-lg hover: cursor-pointer" onClick={() => setIsCheckForSignout(true)}>サインアウト</p>
             { isCheckForSignout 
-            ? <button onClick={handleSignOut} className="hover:underline">本当にサインアウトする</button>
+            ? isLoadingForTransition ? <MiniLoading /> : <button onClick={handleSignOut} className="hover:underline">本当にサインアウトする</button>
             : <></>
             }
           </div>
@@ -160,7 +164,7 @@ const UserButton = ({ userId }: UserButtonProps) => {
             <div>
               <p className="text-rose-600 font-semibold text-lg hover: cursor-pointer" onClick={() => setIsCheckForSignout(true)}>サインアウト</p>
               { isCheckForSignout 
-              ? <button onClick={handleSignOut} className="hover:underline">本当にサインアウトする</button>
+              ? isLoadingForTransition ? <MiniLoading /> : <button onClick={handleSignOut} className="hover:underline">本当にサインアウトする</button>
               : <></>
               }
             </div>
@@ -171,7 +175,7 @@ const UserButton = ({ userId }: UserButtonProps) => {
               </p>
               { isCheckForDelete 
               ?
-                <button className="hover:underline">本当に削除する</button>
+                isLoadingForTransition ? <MiniLoading /> : <button className="hover:underline">本当に削除する</button>
               :
                 <></>
               }

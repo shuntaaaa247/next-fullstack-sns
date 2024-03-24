@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import MiniLoading from "../loading/miniLoading";
 
 type Inputs = {
   email: string,
@@ -14,6 +15,7 @@ type Inputs = {
 // ログインボタン
 export const SigninButton = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInputError, setIsInputError] = useState<boolean>(false);
   const [boxWidth, setBoxWidth] = useState<string>("4/12");
   const { register, handleSubmit } = useForm<Inputs>();
@@ -33,6 +35,8 @@ export const SigninButton = () => {
   })
 
   const onSubmitFunc: SubmitHandler<Inputs> = async (data) => {
+    setIsInputError(false);
+    setIsLoading(true)
     const result = await signIn("user", { //第一引数はoptions.tsで指定したcredentialsProvaiderのid
       redirect: false,
       email: data.email,
@@ -41,7 +45,6 @@ export const SigninButton = () => {
 
     if (result?.error) {
       // ログイン失敗時処理
-      console.log("ログイン失敗");
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/get_user_with_signin`, {
         method: "POST",
@@ -57,18 +60,19 @@ export const SigninButton = () => {
       if(res.status === 401) {
         setIsInputError(true);
       }
+
     } else {
       // ログイン成功時トップページへリダイレクト
       router.push("/")
-      console.log("result = ", result)
-      alert("成功")
     }
+    setIsLoading(false);
   }
 
   return (
     <div className={`p-10 shadow-2xl rounded-xl w-${boxWidth}`}>
       <h1 className='text-center text-4xl font-semibold text-slate-800 mb-10'>Sign In</h1>
       <form onSubmit={handleSubmit(onSubmitFunc)}>
+      {/* setIsLoading(true),  */}
         <div className='mb-5'>
           <label htmlFor="email">email</label>
           <br />
@@ -83,9 +87,13 @@ export const SigninButton = () => {
           className='block w-full px-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2d'
           />
         </div>
-        { isInputError ? <p className="text-rose-600">メールアドレス、またはパスワードが違います</p> : <></>}
+        { isInputError && !isLoading ? <p className="text-rose-600">メールアドレス、またはパスワードが違います</p> : <></>}
         <div className='flex justify-center mt-10'>
-          <button type='submit' className='bg-blue-600 text-white text-md px-4 py-2 rounded-md hover:bg-blue-700'>サインイン</button>
+          { isLoading
+          ? <MiniLoading />
+          : <button type='submit' className='bg-blue-600 text-white text-md px-4 py-2 rounded-md hover:bg-blue-700'>サインイン</button>
+          }
+          
         </div>
         <div className="flex justify-center">
           <Link href={"/register"} className="text-blue-500 hover:underline mt-5">新規アカウントを作成しますか？</Link>

@@ -1,10 +1,12 @@
 "use client"
+import MiniLoading from '@/components/loading/miniLoading'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 const Register = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [boxWidth, setBoxWidth] = useState<string>("4/12");
 
@@ -23,7 +25,6 @@ const Register = () => {
   })
 
   const registUser = async (formData: FormData) => {
-    console.log()
     const res = await fetch("http://localhost:3000/api/auth/register", {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
@@ -41,11 +42,12 @@ const Register = () => {
     } else { //登録失敗時
       setErrorMessage(json.message); 
     }
+    setIsLoading(false);
   }
 
   return(
     <main className='flex justify-center items-center h-screen w-screen'>
-      <form action={registUser} className={`p-10 shadow-2xl rounded-xl w-${boxWidth}`}>
+      <form onSubmit={() => setIsLoading(true)} action={registUser} className={`p-10 shadow-2xl rounded-xl w-${boxWidth}`}>
         <h1 className='text-center text-4xl font-semibold text-slate-800 mb-10'>Sign Up</h1>
         <div className='mb-5'>
           <label htmlFor="username">username</label>
@@ -70,7 +72,10 @@ const Register = () => {
         </div>
         <p className='text-rose-600'>{errorMessage}</p>
         <div className='flex justify-center mt-10'>
-          <button className='bg-blue-600 text-white text-md px-4 py-2 rounded-md hover:bg-blue-700'>サインアップ</button>
+          { isLoading
+          ? <MiniLoading />
+          : <button className='bg-blue-600 text-white text-md px-4 py-2 rounded-md hover:bg-blue-700'>サインアップ</button>
+          }
         </div>
         <div className="flex justify-center">
           <Link href={"/signin"} className="text-blue-500 hover:underline mt-5">すでにアカウントをお持ちですか？</Link>

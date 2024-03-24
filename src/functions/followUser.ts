@@ -6,9 +6,6 @@ export const followUser = async (followerId: number, followingId: number): Promi
       followingId: String(followingId)
     })
   })
-
-  const json = await res.json()
-  console.log(json);
   return res.ok;
 }
 

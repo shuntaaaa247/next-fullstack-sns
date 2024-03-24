@@ -10,7 +10,6 @@ export const createPost = async (userId: string, description: string, file: File
       .from("photos")
       .upload(fileName, file); 
     if(error) {
-      console.error(error.message);
       return false
     }
   }

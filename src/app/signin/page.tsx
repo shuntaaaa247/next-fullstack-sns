@@ -8,7 +8,6 @@ async function Sign() {
     <main>
       <div className="flex justify-center items-center h-screen w-full">
         <SigninButton/>
-        {/* <SignoutButton/> */}
       </div>
     </main>
   )

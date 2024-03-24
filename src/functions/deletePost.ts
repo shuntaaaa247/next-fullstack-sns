@@ -9,8 +9,6 @@ const deletePost = async (postId: number) => {
 
   const json = await res.json();
   const deletedPost: PostType = json.deletedPost;
-  console.log("json:", json);
-  console.log("deletedPost:", deletedPost)
   if(deletedPost.photo) {
     const { data: removeData, error: removeError } = await supabase
       .storage
@@ -18,7 +16,6 @@ const deletePost = async (postId: number) => {
       .remove([deletedPost.photo])
     if(removeError) {
       alert("データベースから投稿画像を削除できませんでした。" + removeError.message);
-      console.error(removeError.message)
     }
   }
 

@@ -27,7 +27,6 @@ const UserOnList = ({ user }: UserOnListProps) => {
           
           setAvatarImageUrl(data.publicUrl);
         } catch(err) {
-          console.log(err);
         }
       }
     }

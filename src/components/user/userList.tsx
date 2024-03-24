@@ -7,8 +7,6 @@ type UserListProps = {
 }
 
 const UserList = ({ mode, following, followers }: UserListProps) => {
-  console.log("following:", following);
-
   const fetchedUser: any[] = []
 
   return(

@@ -64,7 +64,7 @@ export const options: NextAuthOptions = {
   callbacks: {
     // jwt: async ({token, user, account, profile, isNewUser}) => {
     async jwt({token, user, account, profile, isNewUser}) {
-      // 注意: トークンをログ出力してはダメです。(本番環境)
+      // 注意: トークンをログ出力してはダメ。(本番環境)
       // console.log('in jwt', {user, token, account, profile})
 
       if (user) {

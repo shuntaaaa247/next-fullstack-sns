@@ -34,7 +34,6 @@ const SearchedPostContent = ({ post }: SearchedPostContentProps) => {
           
           setAutherAvatarUrl(data.publicUrl);
         } catch(err) {
-          console.log(err);
         }
       }
     }
@@ -51,7 +50,6 @@ const SearchedPostContent = ({ post }: SearchedPostContentProps) => {
           
           setPhotoUrl(data.publicUrl);
         } catch(err) {
-          console.log(err);
         }
       }
     }
