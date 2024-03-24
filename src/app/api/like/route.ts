@@ -1,19 +1,30 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { options } from "@/options";
 
 //インスタンスを作成
 const prisma = new PrismaClient();
 
 export const POST = async (req: NextRequest) => {
-  const searchParams = req.nextUrl.searchParams
-  const postId = searchParams.get("postId")
-  const userId = searchParams.get("userId")
+  const session = await getServerSession(options);
+  const searchParams = req.nextUrl.searchParams;
+  const postId = searchParams.get("postId");
+  const userId = searchParams.get("userId");
+
+  if(!session) {
+    return NextResponse.json({ message: "認証されていません" }, { status: 401})
+  }
   
   if(!postId) {
     return NextResponse.json({ message: "いいねする投稿のIDを送信してください" }, { status: 400 })
   }
   if(!userId) {
     return NextResponse.json({ message: "いいねするユーザーのIDを送信してください" }, { status: 400 })
+  }
+
+  if(String(session.user.id) !== String(userId)) {
+    return NextResponse.json({ message: "権限がありません" }, { status: 403})
   }
 
   try {
@@ -34,15 +45,25 @@ export const POST = async (req: NextRequest) => {
 }
 
 export const DELETE = async (req: NextRequest) => {
+  const session = await getServerSession(options);
   const searchParams = req.nextUrl.searchParams;
   const postId = searchParams.get("postId");
   const userId = searchParams.get("userId");
 
+  if(!session) {
+    return NextResponse.json({ message: "認証されていません" }, { status: 401})
+  }
+
   if(!postId) {
     return NextResponse.json({ message: "いいねする投稿のIDを送信してください" }, { status: 400 })
   }
+
   if(!userId) {
-    return NextResponse.json({ message: "いいねするユーザーのIDを送信してください" }, { status: 400 })
+    return NextResponse.json({ message: "いいねを解除するユーザーのIDを送信してください" }, { status: 400 })
+  }
+
+  if(String(session.user.id) !== String(userId)) {
+    return NextResponse.json({ message: "権限がありません" }, { status: 403})
   }
 
   try {

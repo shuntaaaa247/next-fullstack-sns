@@ -6,6 +6,7 @@ import LeftBar from "@/components/leftBar/leftbar";
 import RightBar from "@/components/rightBar/rightBar";
 import Timeline from "@/components/timeline/timeline";
 import Loading from "@/components/loading/Loading";
+// import UnderBar from "@/components/underBar/underbar";
 
 export default async function Home() {
   return(
@@ -13,25 +14,6 @@ export default async function Home() {
       <HomeContent />
     </Suspense>
   )
-  // const session = await getServerSession(options);
-  
-  // if(!session) {
-  //   return(
-  //     <div>サインインしてください</div>
-  //   )
-  // }
-  // return (
-  //   <main className="flex justify-center">
-  //     <LeftBar userId={session?.user.id} />
-  //     <div className="h-screen w-6/12 flex flex-col">
-  //       <PostShare userId={session.user.id}/>
-  //       <Suspense fallback={<Loading />}>
-  //         <Timeline />
-  //       </Suspense>
-  //     </div>
-  //     <RightBar />
-  //   </main>
-  // );
 }
 
 const HomeContent = async () => {
@@ -43,15 +25,16 @@ const HomeContent = async () => {
     )
   }
   return (
-    <main className="flex justify-center">
+    <main className="sm:flex md:justify-center">
       <LeftBar userId={session?.user.id} />
-      <div className="h-screen w-6/12 flex flex-col">
+      <div className="h-screen w-full sm:w-3/4 md:w-6/12 mt-[60px] sm:mt-0 flex flex-col sm:ml-auto md:mx-auto">
         <PostShare userId={session.user.id}/>
         <Suspense fallback={<Loading />}>
           <Timeline />
         </Suspense>
       </div>
       <RightBar />
+      {/* <UnderBar /> */}
     </main>
   );
 }

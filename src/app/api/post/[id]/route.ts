@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { getServerSession } from "next-auth";
 import { options } from "@/options";
-import type { PostType } from "@/types";
+import type { ApiPostType } from "@/types";
 
 //インスタンスを作成
 const prisma = new PrismaClient();
@@ -16,7 +16,7 @@ export const GET = async (req: NextRequest, { params }: { params: Params }) => {
   
   try {
     await prisma.$connect();
-    const post: PostType | null = await prisma.post.findUnique({
+    const post: ApiPostType | null = await prisma.post.findUnique({
       where: {
         id: Number(params.id)
       },

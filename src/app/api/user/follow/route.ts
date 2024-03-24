@@ -73,13 +73,27 @@ export const GET = async (req: NextRequest) => {
 
 //フォロー用のAPI
 export const POST = async (req: Request) => {
+  const session = await getServerSession(options);
   const { followerId, followingId } = await req.json();
+
+  console.log("=========================")
+  console.log(session);
+  console.log("=========================")
+
+  if(!session) {
+    return NextResponse.json({ message: "認証されていません" }, { status: 401 })
+  }
 
   if(!followerId) {
     return NextResponse.json({ message: "followerIdがありません" }, { status: 400 })
   }
+
   if(!followingId) {
     return NextResponse.json({ message: "followingIdがありません" }, { status: 400 })
+  }
+
+  if(String(session.user.id) !== String(followerId)) {
+    return NextResponse.json({ message: "権限がありません" }, { status: 403 })
   }
 
   try {

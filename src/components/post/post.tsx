@@ -9,7 +9,6 @@ type PostProps = {
   from: string //どのコンポーネント(ページ)から遷移してきたか
 }
 
-// const Post = async ({ post, from }: PostProps) => {
 const Post = ({ post, from }: PostProps) => {
   if(from === "/app") {
     return (

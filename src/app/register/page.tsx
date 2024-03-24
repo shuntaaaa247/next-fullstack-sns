@@ -1,10 +1,26 @@
 "use client"
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FormEvent, useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const Register = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [boxWidth, setBoxWidth] = useState<string>("4/12");
+
+  useEffect(() => {
+    const windowWidth = window.innerWidth;
+    if(windowWidth) {
+      // if(windowWidth < 1100)
+      if(windowWidth < 640) {
+        setBoxWidth("full mx-5");
+      } else if (windowWidth < 850) {
+        setBoxWidth("full mx-32")
+      }else if(windowWidth < 1050) {
+        setBoxWidth("1/2");
+      }
+    }
+  })
 
   const registUser = async (formData: FormData) => {
     console.log()
@@ -28,8 +44,8 @@ const Register = () => {
   }
 
   return(
-    <main className='flex justify-center items-center h-screen'>
-      <form action={registUser} className='p-10 shadow-2xl rounded-xl w-4/12'>
+    <main className='flex justify-center items-center h-screen w-screen'>
+      <form action={registUser} className={`p-10 shadow-2xl rounded-xl w-${boxWidth}`}>
         <h1 className='text-center text-4xl font-semibold text-slate-800 mb-10'>Sign Up</h1>
         <div className='mb-5'>
           <label htmlFor="username">username</label>
@@ -55,6 +71,9 @@ const Register = () => {
         <p className='text-rose-600'>{errorMessage}</p>
         <div className='flex justify-center mt-10'>
           <button className='bg-blue-600 text-white text-md px-4 py-2 rounded-md hover:bg-blue-700'>サインアップ</button>
+        </div>
+        <div className="flex justify-center">
+          <Link href={"/signin"} className="text-blue-500 hover:underline mt-5">すでにアカウントをお持ちですか？</Link>
         </div>
       </form>
     </main>

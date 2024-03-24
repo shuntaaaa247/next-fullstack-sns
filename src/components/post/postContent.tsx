@@ -7,6 +7,7 @@ import { supabase } from "@/supabase";
 import Image from "next/image";
 import initial_avatar from "../../../public/initial_avatar.png";
 import PostPhoto from "./postPhoto";
+import fetchUser from "@/functions/fetchUser";
 
 type PostContentProps = {
   post: PostType
@@ -15,46 +16,15 @@ type PostContentProps = {
 
 const PostContent = async ({ post, from }: PostContentProps) => {
   const session = await getServerSession(options);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-  const res = await fetch(`${baseUrl}/api/user/${post.autherId}`);
-  const json = await res.json();
-  const auther = json.user;
+  const { user: auther, avatarUrl: autherAvatarUrl } = await fetchUser(String(post.autherId))
   const createdAt = new Date(post.createdAt);
-  let autherAvatarImageUrl:string | null = null;
-  let photoUrl: string | null = null;
-
-  if(auther.avatar) {
-    try {
-      const { data } = await supabase
-        .storage
-        .from("avatars")
-        .getPublicUrl(auther.avatar)
-      
-      autherAvatarImageUrl = data.publicUrl;
-    } catch(err) {
-      console.log(err);
-    }
-  }
-
-  if(post.photo) {
-    try {
-      const { data } = await supabase
-        .storage
-        .from("photos")
-        .getPublicUrl(post.photo)
-      photoUrl = data.publicUrl
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
 
   return (
     <div className="mb-1">
       <div className="flex justify-start my-1">
         <div className="relative h-[35px] w-[35px] mr-3">
-          { auther.avatar && autherAvatarImageUrl
-          ? <Image src={autherAvatarImageUrl} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
+          { auther.avatar && autherAvatarUrl
+          ? <Image src={autherAvatarUrl} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
           : <Image src={initial_avatar} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
           }
         </div>
@@ -63,9 +33,9 @@ const PostContent = async ({ post, from }: PostContentProps) => {
         { Number(session?.user.id) === post.autherId ? <MoreButton postId={post.id} /> : <></>}
       </div>
       <div className="">
-      <p>{post.description}</p>
-      { post.photo && photoUrl 
-        ? <PostPhoto photoUrl={photoUrl}/>
+      <p className="whitespace-pre-wrap">{post.description}</p>
+      { post.photo && post.photoUrl 
+        ? <PostPhoto photoUrl={post.photoUrl}/>
         : <></> 
       }
       </div>

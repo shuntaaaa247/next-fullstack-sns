@@ -1,28 +1,40 @@
-// import { PrismaClient } from "@prisma/client";
-// import { NextRequest, NextResponse } from "next/server";
+import { options } from "@/options";
+import { getServerSession } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
-// //インスタンスを作成
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
-// export const GET = async (req: NextRequest) => {
-//   try {
-//     await prisma.$connect()
-//     const body = await req.json();
-//     const idList: string[] = body.idList
-//     const userList = [];
-//     for (const id of idList) {
-//       const user = await prisma.user.findUnique({
-//         where: {
-//           id: Number(id)
-//         }
-//       })
-//       userList.push(user);
-//     }
-//     return NextResponse.json({ message: "取得成功", users: userList }, { status: 200 })
-//   } catch(err) {
-//     console.log(err);
-//     return NextResponse.json({ message: "取得失敗" }, { status: 500 })
-//   } finally {
-//     await prisma.$disconnect();
-//   }
-// }
+export const DELETE = async (req: NextRequest) => {
+  const session = await getServerSession(options);
+  const { userId } = await req.json()
+
+  if(!userId) {
+    return NextResponse.json({ message: "削除するユーザーのIDを送信してください" }, { status: 400 })
+  }
+
+  if(!session) {
+    return NextResponse.json({ message: "認証されていません" })
+  }
+
+  if(String(session.user.id) !== String(userId)) {
+    return NextResponse.json({ message: "権限がありません" }, { status: 403 })
+  }
+  
+  try {
+
+    await prisma.$connect()
+
+    const deletedUser = await prisma.user.delete({
+      where: {
+        id: Number(userId)
+      }
+    })
+    return NextResponse.json({ message: "削除完了", deletedUser: deletedUser}, { status: 200 })
+  } catch(err) {
+    console.log(err);
+    return NextResponse.json({ message: "削除失敗" }, { status: 500 });
+  } finally {
+    await prisma.$disconnect()
+  }
+}

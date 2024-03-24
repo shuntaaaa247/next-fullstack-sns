@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import { usePathname } from "next/navigation";
 import { Toaster, toast } from "react-hot-toast"; 
@@ -8,6 +8,7 @@ import deletePost from '@/functions/deletePost';
 import moreHorizontalIcon from "../../../public/svg/more-horizontal-fromgpt.svg"
 import clearIcon from "../../../public/svg/clear-icon-fromgpt.svg"
 import Image from 'next/image';
+import MiniLoading from '../loading/miniLoading';
 
 const customStyles = {
   content: {
@@ -17,7 +18,7 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    height: "15%",
+    height: "13%",
     width: "20%",
     border: "none",
     borderRadius: "10px",
@@ -36,7 +37,26 @@ type MorePostOptionsModalProps = {
 }
 
 const MoreButton = ({ postId }: MoreButtonProps) => {
-  const [modalIsOpen, setIsOpen] = useState<boolean>(false)
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const windowInnerWidth: number | null | undefined = window.innerWidth
+    const windowInnerHeight: number | null | undefined = window.innerHeight
+
+    if(windowInnerWidth >= 1100 || !windowInnerWidth) { 
+    } else if (windowInnerWidth >= 900) {
+      customStyles.content.width = "28%";
+    } else if (windowInnerWidth >= 750) {
+      customStyles.content.width = "36%";
+    } else if (windowInnerWidth >= 640) {
+      customStyles.content.width = "44%";
+    } else {
+      customStyles.content.width = "52%";
+      if(windowInnerHeight < 700) {
+        customStyles.content.height = "16%"
+      }
+    }
+  }, [])
 
   function openModal() {
     setIsOpen(true)
@@ -75,6 +95,7 @@ const MorePostOptionsModal = ({ postId }: MorePostOptionsModalProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean | null>(null)
 
   const _deletePost = async () => {
     setIsDeleting(true);
@@ -86,8 +107,8 @@ const MorePostOptionsModal = ({ postId }: MorePostOptionsModalProps) => {
       router.refresh()
     } else {
       toast.error("Error", { id: "post"});//トースト
+      setIsDeleting(false);
     }
-    setIsDeleting(false);
   }
   return(
     <div className='flex justify-center'>
@@ -97,12 +118,12 @@ const MorePostOptionsModal = ({ postId }: MorePostOptionsModalProps) => {
         className='mt-4 w-[95%] py-1 border rounded-full border-rose-500' 
         disabled
         >
-          <span className='text-rose-500 font-semibold'>投稿を削除する</span>
+          <span className='text-rose-500 font-semibold'><MiniLoading /></span>
         </button>
 
       : <button 
         onClick={async() => {await _deletePost()}} 
-        className='mt-4 w-[95%] py-1 border rounded-full border-rose-500 hover:bg-rose-100' 
+        className='mt-1 w-[95%] py-1 border rounded-full border-rose-500 hover:bg-rose-100' 
         >
           <span className='text-rose-500 font-semibold'>投稿を削除する</span>
         </button>

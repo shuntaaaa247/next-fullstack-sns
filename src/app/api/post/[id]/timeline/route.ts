@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { getServerSession } from "next-auth";
 import { options } from "@/options";
-import type { PostType, FollowType } from "@/types";
+import type { ApiPostType, FollowType } from "@/types";
 
 //インスタンスを作成
 const prisma = new PrismaClient();
@@ -18,12 +18,12 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
 
   try {
     await prisma.$connect();
-    let timelinePosts: PostType[] = [];
+    let timelinePosts: ApiPostType[] = [];
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${targetId}`);
     const resJson = await res.json();
     const following = resJson.user.following;
 
-    const myPosts: PostType[] = await prisma.post.findMany({
+    const myPosts: ApiPostType[] = await prisma.post.findMany({
       where: {
         autherId: Number(targetId)
       },
@@ -37,7 +37,7 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
     timelinePosts.push(...myPosts)
 
     await Promise.all(following.map(async (follow: FollowType) => {
-      const posts: PostType[] = await prisma.post.findMany({
+      const posts: ApiPostType[] = await prisma.post.findMany({
         where: {
           autherId: Number(follow.followingId)
         },

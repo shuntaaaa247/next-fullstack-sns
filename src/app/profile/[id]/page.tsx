@@ -25,7 +25,7 @@ type ProfileContentProps = {
 
 const ProfileContent = async ({ userId }: ProfileContentProps) => {
   const session = await getServerSession(options);
-  const user = await fetchUser(userId);
+  const { user, avatarUrl } = await fetchUser(userId);
 
   if(!session) {
     return(
@@ -36,16 +36,16 @@ const ProfileContent = async ({ userId }: ProfileContentProps) => {
   }
 
   return(
-    <main className="flex justify-center">
+    <main className="sm:flex md:justify-center">
       <LeftBar userId={session?.user.id}/>
-      <div className="h-screen w-6/12 flex flex-col">
+      <div className="h-screen w-full sm:w-3/4 md:w-6/12 mt-[60px] sm:mt-0 flex flex-col sm:ml-auto md:mx-auto">
         { user && session ? 
-        <div>
-          <ProfileInfo user={user} signedInUserId={Number(session?.user.id)} />
+        <>
+          <ProfileInfo user={user} avaterUrl={avatarUrl} signedInUserId={Number(session?.user.id)} />
             <Suspense fallback={<Loading />}>
           <Timeline userId={user.id}/>
           </Suspense>
-        </div> :
+        </> :
         <p>ユーザーが見つかりませんでした</p> 
         }
       </div>

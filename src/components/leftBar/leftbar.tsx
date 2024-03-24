@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation';
+import UserButton from './userButton';
 import Modal from 'react-modal'
 import PostShareModal from './postShareModal'
 import ClearIcon from '@mui/icons-material/Clear';
@@ -11,6 +12,7 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import SavedSearchIcon from '@mui/icons-material/SavedSearch';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 
 type LeftBarProps = {
   userId: string
@@ -40,6 +42,21 @@ const LeftBar = ({ userId }: LeftBarProps) => {
   const page: string = pahtname.split("/")[1]
   const [modalIsOpen, setIsOpen] = useState<boolean>(false)
 
+  useEffect(() => {
+    const windowInnerWidth: number | null | undefined = window.innerWidth
+
+    if(windowInnerWidth >= 1100 || !windowInnerWidth) { 
+    } else if (windowInnerWidth >= 900) {
+      customStyles.content.width = "60%";
+    } else if (windowInnerWidth >= 750) {
+      customStyles.content.width = "70%";
+    } else if (windowInnerWidth >= 640) {
+      customStyles.content.width = "80%";
+    } else {
+      customStyles.content.width = "90%";
+    }
+  }, [])
+
   function openModal() {
     setIsOpen(true)
   }
@@ -52,60 +69,97 @@ const LeftBar = ({ userId }: LeftBarProps) => {
   }
 
   return(
-    <div className="h-screen w-3/12 fixed left-0 border-r-2">
-      <div className='flex justify-center'>
-        <button className="my-5 text-2xl font-medium">NEXT FULLSTACK SNS</button>
+    <>
+      <div className="h-screen w-0 sm:w-1/4 md:w-3/12 fixed left-0 border-r-2 flex flex-col invisible sm:visible">
+        <div className='flex justify-center'>
+          <button className="my-5 text-2xl font-medium">NEXT FULLSTACK SNS</button>
+        </div>
+        <div className="flex justify-start md:ml-[25%]">
+          <div className='flex flex-col sm: mx-auto md:mx-0'>
+            { page === "" 
+            ? 
+              <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push("/")}>
+                <HomeIcon fontSize='large'/>
+                <span className='flex ml-1 text-2xl my-auto font-medium'>Home</span>
+              </button>
+            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push("/")}>
+                <HomeOutlinedIcon fontSize='large'/>
+                <span className='flex ml-1 text-2xl font-medium'>Home</span>
+              </button>
+            }
+            { page === "search" 
+            ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push("/search")}>
+                <SavedSearchIcon fontSize='large' />
+                <span className='text-2xl ml-1 font-medium'>Search</span>
+              </button>
+            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push("/search")}>
+                <SearchOutlinedIcon fontSize='large'/>
+                <span className='text-2xl ml-1 font-medium'>Search</span>
+              </button>
+            }
+            { page === "profile"
+            ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push(`/profile/${userId}`)}>
+                <PersonIcon fontSize='large'/>
+                <span className='text-2xl ml-1 font-medium'>Profile</span>
+              </button>
+            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push(`/profile/${userId}`)}>
+                <PersonOutlinedIcon fontSize='large'/>
+                <span className='text-2xl ml-1 font-medium'>Profile</span>
+              </button>
+            }
+          </div>
+        </div>
+        <button onClick={openModal} className="w-3/5 py-2 sm:mx-auto md:ml-[30%] mt-5 bg-blue-500 rounded-full text-white font-semibold text-2xl hover:bg-blue-600">Post</button>
+        <div className='mt-auto mb-5 invisible sm:visible'>
+          <UserButton userId={userId}/>
+        </div>
+        <Modal
+          contentLabel="Example Modal"
+          isOpen={modalIsOpen}
+          style={customStyles}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+        >
+          <div className='flex h-[12%]'>
+            <button  onClick={closeModal}><ClearIcon/></button>
+          </div>
+            <PostShareModal closeModalFunc={closeModal} userId={userId}/>
+        </Modal>
+        
       </div>
-      <div className="flex justify-start ml-[30%]">
-        <div className='flex flex-col'>
-          { page === "" 
-          ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push("/")}>
-              <HomeIcon fontSize='large'/>
-              <span className='flex ml-1 text-2xl font-medium'>Home</span>
-            </button>
-          : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push("/")}>
-              <HomeOutlinedIcon fontSize='large'/>
-              <span className='flex ml-1 text-2xl font-medium'>Home</span>
-            </button>
+
+      {/* モバイル画面用 */}
+      {/* フッター */}
+      <>
+        <div className="w-full flex justify-around fixed bottom-0 py-3 bg-white border-t z-10 visible sm:invisible">
+          { page === ""
+          ? <button onClick={() => router.push("/")}><HomeIcon fontSize='large'/></button>
+          : <button onClick={() => router.push("/")}><HomeOutlinedIcon fontSize='large'/></button>
           }
-          { page === "search" 
-          ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push("/search")}>
-              <SavedSearchIcon fontSize='large' />
-              <span className='text-2xl ml-1 font-medium'>Search</span>
-            </button>
-          : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push("/search")}>
-              <SearchOutlinedIcon fontSize='large'/>
-              <span className='text-2xl ml-1 font-medium'>Search</span>
-            </button>
+          { page === "search"
+          ? <button onClick={() => router.push("/search")}><SavedSearchIcon fontSize='large'/></button>
+          : <button onClick={() => router.push("/search")}><SearchOutlinedIcon fontSize='large'/></button>
           }
           { page === "profile"
-          ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push(`/profile/${userId}`)}>
-              <PersonIcon fontSize='large'/>
-              <span className='text-2xl ml-1 font-medium'>Profile</span>
-            </button>
-          : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push(`/profile/${userId}`)}>
-              <PersonOutlinedIcon fontSize='large'/>
-              <span className='text-2xl ml-1 font-medium'>Profile</span>
-            </button>
+          ? <button onClick={() => router.push(`/profile/${userId}`)}><PersonIcon fontSize='large'/></button>
+          : <button onClick={() => router.push(`/profile/${userId}`)}><PersonOutlinedIcon fontSize='large'/></button>
           }
         </div>
-      </div>
-      <button onClick={openModal} className="w-3/5 py-2 ml-[30%] mt-5 bg-blue-500 rounded-full text-white font-semibold text-2xl hover:bg-blue-600">Post</button>
-      <Modal
-        contentLabel="Example Modal"
-        isOpen={modalIsOpen}
-        style={customStyles}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-      >
-        <div className='flex h-[12%]'>
-          {/* <button  onClick={closeModal} className='p-1 rounded-full hover:bg-stone-100 font-light'><ClearIcon/></button> */}
-          <button  onClick={closeModal}><ClearIcon/></button>
+        <button onClick={openModal} className="fixed z-10 bottom-[10%] right-5 bg-blue-500 w-16 h-16 rounded-full text-white font-semibold text-2xl hover:bg-blue-600 visible sm:invisible">
+        <HistoryEduIcon fontSize='large'/>
+        </button>
+      </>
+
+      {/* ヘッダー */}
+      <>
+        <div className='w-full h-[60px] flex fixed top-0 bg-white border-b z-10 visible sm:invisible'>
+          <UserButton userId={userId}/>
+          <span className='ml-auto text-lg font-semibold my-auto mr-5'>NEXT FULLSTACK SNS</span>
         </div>
-          <PostShareModal closeModalFunc={closeModal} userId={userId}/>
-      </Modal>
-    </div>
+      </>
+    </>
   )
 }
 
 export default LeftBar
+

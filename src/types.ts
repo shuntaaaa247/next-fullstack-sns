@@ -64,10 +64,13 @@ export type PostType = {
   description: string,
   autherId: number,
   photo: string | null,
+  photoUrl: string | null, //フロントエンド専用のプロパティで実際のデータベースには存在しない
   likes: LikeType[],
   createdAt: Date,
   updatedAt: Date,
 }
+
+export type ApiPostType = Omit<PostType, "photoUrl">
 
 export type FollowType = {
   followerId: Number,

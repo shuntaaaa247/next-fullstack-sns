@@ -1,9 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
-import { getServerSession } from "next-auth";
-import { options } from "@/options";
-import type { PostType, FollowType } from "@/types";
+import type { ApiPostType } from "@/types";
 
 //インスタンスを作成
 const prisma = new PrismaClient();
@@ -17,7 +15,7 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
 
   try {
     await prisma.$connect()
-    const profileTimelinePosts: PostType[] | null = await prisma.post.findMany({
+    const profileTimelinePosts: ApiPostType[] | null = await prisma.post.findMany({
       where: {
         autherId: Number(targetId)
       },

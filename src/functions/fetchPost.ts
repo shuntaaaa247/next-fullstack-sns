@@ -1,3 +1,5 @@
+import { supabase } from "@/supabase";
+import { PostType } from "@/types";
 import { headers } from "next/headers";
 
 const fetchPost = async (id: string) => {
@@ -5,12 +7,21 @@ const fetchPost = async (id: string) => {
     headers: headers()
   });
   if (!res.ok) {
-    console.log("resはOKではありませんでした")
-    console.log("res = ", res);
     return null;
   }
+
   const json = await res.json();
-  return json.post;
+  const post: PostType = json.post;
+  let photoUrl: string | null = null;
+  if(post && post.photo) {
+    const { data } = supabase
+      .storage
+      .from('photos')
+      .getPublicUrl(post.photo)
+    photoUrl = data.publicUrl ?? null;
+  }
+  post.photoUrl = photoUrl;
+  return post;
 }
 
 export default fetchPost;

@@ -6,9 +6,9 @@ async function Sign() {
   
   return (
     <main>
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen w-full">
         <SigninButton/>
-        <SignoutButton/>
+        {/* <SignoutButton/> */}
       </div>
     </main>
   )

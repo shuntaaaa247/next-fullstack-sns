@@ -9,7 +9,6 @@ export const useSearchPost = (rawText: string) => {
   console.log("data :", data);
 
   const posts: PostType[] = data?.results ?? null
-  // return { data, error, isLoading };
   return { posts, error, isLoading };
 }
 

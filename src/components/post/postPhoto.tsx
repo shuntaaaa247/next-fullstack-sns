@@ -53,12 +53,6 @@ const PostPhoto = ({ photoUrl }: PostPhotoProps) => {
         <Image src={photoUrl} layout="fill" objectFit="contain" className="rounded-md" alt="photo"/>
         </button>
         </div>
-        {/* <div className="flex">
-          <button onClick={closeModal} className="mb-auto">close</button>
-          <div className="relative h-screen w-[85vw] ">
-          <Image src={photoUrl} layout="fill" objectFit="contain" className="rounded-md" alt="photo"/>
-          </div>
-        </div> */}
       </Modal>
     </>
   )

@@ -33,9 +33,9 @@ const PostDetailContent = async ({ postId }: PostDetailContentProps) => {
     )
   }
   return(
-    <main className="flex justify-center">
-      <LeftBar userId={session?.user.id}/>
-      <div className="h-screen w-6/12 flex flex-col">
+    <main className="sm:flex md:justify-center">
+    <LeftBar userId={session?.user.id}/>
+    <div className="h-screen w-full sm:w-3/4 md:w-6/12 flex flex-col sm:ml-auto md:mx-auto">
         <div className="py-3 flex border-b">
           <p className="ml-10 font-semibold text-2xl">Post</p>
         </div>

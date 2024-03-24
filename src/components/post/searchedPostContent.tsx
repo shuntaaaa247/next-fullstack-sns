@@ -9,6 +9,7 @@ import { supabase } from "@/supabase"
 import Image from "next/image"
 import initial_avatar from "../../../public/initial_avatar.png"
 import MiniLoading from "../loading/miniLoading"
+import PostPhoto from "./postPhoto"
 
 type SearchedPostContentProps = {
   post: PostType,
@@ -18,7 +19,8 @@ const SearchedPostContent = ({ post }: SearchedPostContentProps) => {
   const { data: session, status } = useSession();
   const { user, error, isLoading } = useUser(post.autherId);
 
-  const [autherAvatarImageUrl, setAutherAvatarImageUrl] = useState<string | null>(null);
+  const [autherAvatarUrl, setAutherAvatarUrl] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string| null>(null);
   const [isAvatarLoading, setIsAvatarLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -30,13 +32,30 @@ const SearchedPostContent = ({ post }: SearchedPostContentProps) => {
             .from("avatars")
             .getPublicUrl(user.avatar)
           
-          setAutherAvatarImageUrl(data.publicUrl);
+          setAutherAvatarUrl(data.publicUrl);
         } catch(err) {
           console.log(err);
         }
       }
     }
     getAvatar();
+    setIsAvatarLoading(false);
+
+    const getPhoto = async () => {
+      if(post && post.photo) {
+        try {
+          const { data } = await supabase
+            .storage
+            .from("photos")
+            .getPublicUrl(post.photo)
+          
+          setPhotoUrl(data.publicUrl);
+        } catch(err) {
+          console.log(err);
+        }
+      }
+    }
+    getPhoto();
     setIsAvatarLoading(false);
   }, [user])
 
@@ -52,8 +71,8 @@ const SearchedPostContent = ({ post }: SearchedPostContentProps) => {
         <div className="relative h-[35px] w-[35px] mr-3">
           { isAvatarLoading 
           ? <MiniLoading />
-          :  user.avatar && autherAvatarImageUrl
-            ? <Image src={autherAvatarImageUrl} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
+          :  user.avatar && autherAvatarUrl
+            ? <Image src={autherAvatarUrl} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
             : <Image src={initial_avatar} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
             
           }
@@ -64,6 +83,10 @@ const SearchedPostContent = ({ post }: SearchedPostContentProps) => {
       </div>
       <div className="">
       <p>{post.description}</p>
+      { post.photo && photoUrl 
+        ? <PostPhoto photoUrl={photoUrl}/>
+        : <></> 
+      }
       </div>
       <Link href={`/post_detail/${post.id}`}><span className="mt-1 text-blue-500 hover:underline">show detail</span></Link>
     </div>

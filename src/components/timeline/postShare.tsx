@@ -53,7 +53,7 @@ const PostShare = ({ userId }: PostShareProps) => {
   console.log("errors", errors);
 
   return(
-    <form className="h-1/6" onSubmit={handleSubmit(onSubmit)}> 
+    <form className="h-0 sm:h-1/6 invisible sm:visible" onSubmit={handleSubmit(onSubmit)}> 
     <Toaster />
       <textarea id="description" placeholder="what is happening?!" 
       className="w-full h-[65%] px-3 border-0 resize-none focus:outline-0"

@@ -13,10 +13,10 @@ import editProfile from "@/functions/editProfile";
 import { profileInputs, ProfileInputsType } from "@/types";
 import ClearIcon from '@mui/icons-material/Clear';
 import initial_avatar from "../../../public/initial_avatar.png"
-import { supabase } from "@/supabase";
 
 type ProfileInfoProps = {
   user: any,
+  avaterUrl: string | null,
   signedInUserId: number
 }
 
@@ -28,7 +28,7 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    height: "50%",
+    height: "62%",
     width: "45%",
     border: "none",
     borderRadius: "20px",
@@ -38,7 +38,7 @@ const customStyles = {
 
 Modal.setAppElement('body') // bodyなど任意の要素に変更OK
 
-const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
+const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
   const router = useRouter();
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [followingLength, setFollowingLength] = useState<number>(user.following.length)
@@ -47,7 +47,7 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>();
   const [preview, setPreview] = useState<string>("");
-  const [userAvatar, setUserAvatar] = useState<string>("");
+  // const [userAvatar, setUserAvatar] = useState<string>("");
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileInputsType>({ //zodで定義したスキーマから取り出した型を設定する
     resolver: zodResolver(profileInputs), //zodで定義したスキーマでバリデーションするため
@@ -72,21 +72,6 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
   }
 
   useEffect(() => {
-    const getAvatar = async () => {
-      if(user.avatar) {
-        try {
-          const { data } = await supabase
-            .storage
-            .from("avatars")
-            .getPublicUrl(user.avatar)
-
-          setUserAvatar(data.publicUrl)
-        } catch(err) {
-          console.log(err)
-        }
-      }
-    }
-    getAvatar()
     for (const follower of user.followers) {
       if(String(follower.followerId) === String(signedInUserId)) {
         setIsFollowing(true);
@@ -94,7 +79,35 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
       }
     }
     setIsLoading(false);
-  }, [user]);
+  });
+
+
+  useEffect(() => {
+    const windowInnerWidth: number | null | undefined = window.innerWidth
+    const windowInnerHeight: number | null | undefined = window.innerHeight
+
+    if(windowInnerWidth >= 1100 || !windowInnerWidth) { 
+      customStyles.content.height = "65%";
+    } else if (windowInnerWidth >= 900) {
+      customStyles.content.width = "60%";
+    } else if (windowInnerWidth >= 750) {
+      customStyles.content.width = "70%";
+    } else if (windowInnerWidth >= 640) {
+      customStyles.content.width = "80%";
+    } else {
+      customStyles.content.width = "90%";
+    }
+    
+    if(windowInnerHeight < 700 && windowInnerWidth < 640) {
+      customStyles.content.height = "70%";
+    } else if (windowInnerHeight < 900 && windowInnerWidth < 640) {
+      customStyles.content.height = "55%"
+    }
+    else if (windowInnerHeight < 1000 && windowInnerWidth < 640) {
+      customStyles.content.height = "50%";
+    }
+  }, [])
+
 
   
 
@@ -153,8 +166,8 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
           ? <MiniLoading />
           : 
           <div className="relative h-[100px] w-[100px]">
-            { user.avatar 
-            ? <Image src={userAvatar} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
+            { user.avatar && avaterUrl
+            ? <Image src={avaterUrl} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
             : <Image src={initial_avatar} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
             }
           </div>
@@ -213,7 +226,7 @@ const ProfileInfo = ({ user, signedInUserId }: ProfileInfoProps) => {
               <div className="mb-2">
                 <label htmlFor="icon">
                   <div className="relative h-[100px] w-[100px]">
-                    <Image src={preview ? preview : user.avatar ? userAvatar : initial_avatar} fill objectFit="cover" alt="initial avatar" className="rounded-full border-2 hover:border-4"/>
+                    <Image src={preview ? preview : user.avatar && avaterUrl ? avaterUrl : initial_avatar} fill objectFit="cover" alt="avatar" className="rounded-full border-2 hover:border-4"/>
                   </div>
                 </label>
                 <input id="icon" type="file" accept=".png, .jpg, jpeg" {...register("avatar")} onChange={handleChangeFile} className="hidden"/>

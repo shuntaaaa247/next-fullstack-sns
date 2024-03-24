@@ -31,9 +31,9 @@ const FollowingContent = async ({ targetUserId }: FollowingContentProps) => {
   }
 
   return(
-    <main className="flex justify-center">
-      <LeftBar userId={session?.user.id} />
-      <div className="h-screen w-6/12 flex flex-col">
+    <main className="sm:flex md:justify-center">
+    <LeftBar userId={session?.user.id} />
+    <div className="h-screen w-full sm:w-3/4 md:w-6/12 mt-[60px] sm:mt-0 flex flex-col sm:ml-auto md:mx-auto">
       <Suspense fallback={<Loading />}>
         <FollowingFollowersCommon mode="following" targetUserId={targetUserId}/>
       </Suspense>

@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { getServerSession } from "next-auth";
 import { options } from "@/options";
-import { PostType } from "@/types";
+import { ApiPostType } from "@/types";
 
 //インスタンスを作成
 const prisma = new PrismaClient();
@@ -34,18 +33,24 @@ export const GET = async (req: Request, res: NextResponse) => {
 export const POST = async (req: NextRequest, res: NextResponse) => {
   const { description, autherId, photo } = await req.json();
 
-  // 知識不足：apiルートのPOSTでgetServerSessionを使用してもsessionを取得できない。GETの場合はheadersをnext-authのheaders()にしたら取得できた。
-  // const session = await getServerSession(options);
-  // if(session?.user.id !== autherId) {
-  //   console.log("session = ", session)
-  //   return NextResponse.json({ message: "認証を通過しませんでした", description: description, autherId: autherId, token: token }, { status: 401 });
-  // }
+  const session = await getServerSession(options);
+
+  if(!session) {
+    console.log("認証されていません");
+    return NextResponse.json({ message: "認証されていません" }, { status: 401 })
+  }
 
   if(!description) {
     return NextResponse.json({ message: "投稿内容を記述してください"}, { status: 400 })
   }
+  
   if(!autherId) {
     return NextResponse.json({ message: "投稿者のIDを送信してください" }, { status: 400 });
+  }
+
+  if(String(session?.user.id) !== String(autherId)) {
+    console.log("権限がありません")
+    return NextResponse.json({ message: "権限がありません" }, { status: 403 })
   }
 
   try {
@@ -72,7 +77,6 @@ export const DELETE = async (req: NextRequest) => {
   const session = await getServerSession(options);
   const searchParams = req.nextUrl.searchParams
   const postId = searchParams.get("postId")
-  const userId = searchParams.get("userId")
 
   if(!postId) {
     return NextResponse.json({ mmessage: "投稿のIDがありません" }, { status: 400 })
@@ -80,7 +84,7 @@ export const DELETE = async (req: NextRequest) => {
 
   try {
     await connect();
-    const post: PostType | null  = await prisma.post.findUnique({
+    const post: ApiPostType | null  = await prisma.post.findUnique({
       where: {
         id: Number(postId)
       },

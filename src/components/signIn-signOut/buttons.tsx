@@ -1,10 +1,10 @@
 "use client";
 
-import {SessionProvider, signIn, signOut} from "next-auth/react";
-import IsSignin from "./isSignin";
+import { signIn, signOut } from "next-auth/react";
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Inputs = {
   email: string,
@@ -15,7 +15,22 @@ type Inputs = {
 export const SigninButton = () => {
   const router = useRouter();
   const [isInputError, setIsInputError] = useState<boolean>(false);
+  const [boxWidth, setBoxWidth] = useState<string>("4/12");
   const { register, handleSubmit } = useForm<Inputs>();
+
+  useEffect(() => {
+    const windowWidth = window.innerWidth;
+    if(windowWidth) {
+      // if(windowWidth < 1100)
+      if(windowWidth < 640) {
+        setBoxWidth("full mx-5");
+      } else if (windowWidth < 850) {
+        setBoxWidth("full mx-32")
+      }else if(windowWidth < 1050) {
+        setBoxWidth("1/2");
+      }
+    }
+  })
 
   const onSubmitFunc: SubmitHandler<Inputs> = async (data) => {
     const result = await signIn("user", { //第一引数はoptions.tsで指定したcredentialsProvaiderのid
@@ -28,7 +43,7 @@ export const SigninButton = () => {
       // ログイン失敗時処理
       console.log("ログイン失敗");
 
-      const res = await fetch("http://localhost:3000/api/auth/get_user_with_signin", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/get_user_with_signin`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -51,7 +66,7 @@ export const SigninButton = () => {
   }
 
   return (
-    <div className="p-10 shadow-2xl rounded-xl w-4/12">
+    <div className={`p-10 shadow-2xl rounded-xl w-${boxWidth}`}>
       <h1 className='text-center text-4xl font-semibold text-slate-800 mb-10'>Sign In</h1>
       <form onSubmit={handleSubmit(onSubmitFunc)}>
         <div className='mb-5'>
@@ -72,10 +87,10 @@ export const SigninButton = () => {
         <div className='flex justify-center mt-10'>
           <button type='submit' className='bg-blue-600 text-white text-md px-4 py-2 rounded-md hover:bg-blue-700'>サインイン</button>
         </div>
+        <div className="flex justify-center">
+          <Link href={"/register"} className="text-blue-500 hover:underline mt-5">新規アカウントを作成しますか？</Link>
+        </div>
       </form>
-      {/* <SessionProvider>
-        <IsSignin />
-      </SessionProvider> */}
     </div>
   );
 };

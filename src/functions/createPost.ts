@@ -17,14 +17,12 @@ export const createPost = async (userId: string, description: string, file: File
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
     method: "POST",
-    headers: { //apiルートでgetServerSessionによるsessionができない。このheadersに問題があるのか。
+    headers: {
       "Content-Type": "application/json", 
-      // "Authorization": `Bearer ${session?.user.accessToken}`
     },
     body: JSON.stringify({
       description: description,
       autherId: userId,
-      // autherId: session?.user.id,
       photo: fileName ?? null
     })
   });

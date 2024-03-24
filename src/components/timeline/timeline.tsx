@@ -29,7 +29,7 @@ const Timeline = async ({ userId }: TimelineProps) => {
   }
 
   return(
-    <div className="h-5/6">
+    <div className="sm:h-5/6">
       { timelinePosts.map((timelinePost: PostType) => {
         return (
           <div key={timelinePost.id}>
@@ -37,7 +37,7 @@ const Timeline = async ({ userId }: TimelineProps) => {
           </div>
         )
       })}
-      <div className="h-1/5"></div>
+      <div className="h-[100px] sm:h-1/5"></div>
     </div>
   )
 }
