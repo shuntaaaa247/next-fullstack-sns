@@ -8,7 +8,7 @@ const Register = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [boxWidth, setBoxWidth] = useState<string>("4/12");
+  const [boxWidth, setBoxWidth] = useState<string>("1/2 mx-[30%]");
 
   useEffect(() => {
     const windowWidth = window.innerWidth;
@@ -22,7 +22,7 @@ const Register = () => {
         setBoxWidth("1/2");
       }
     }
-  })
+  }, [])
 
   const registUser = async (formData: FormData) => {
     const res = await fetch("http://localhost:3000/api/auth/register", {

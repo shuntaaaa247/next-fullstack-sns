@@ -6,7 +6,8 @@ import { LikeType } from "@/types";
 import { likePost, deleteLike } from "@/functions/likePost";
 import Image from 'next/image';
 import likeBorderIcon from "../../../public/svg/like-border.svg";
-import likeFillIcon from "../../../public/svg/like-fill.svg"
+import likeFillIcon from "../../../public/svg/like-fill.svg";
+import { useRouter } from "next/navigation";
 
 type PostOptionsProps = {
   postId: Number,
@@ -25,8 +26,9 @@ const PostOptions = ({ postId, likes }: PostOptionsProps) => {
 export default PostOptions
 
 const PostOptionContent = ({ postId, likes }: PostOptionsProps) => {
-  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL ?? ""
-  const { data: session, status } = useSession()
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL ?? "";
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [likeConunt, setLikeCount] = useState<number>(likes?.length ?? 0);
@@ -37,16 +39,19 @@ const PostOptionContent = ({ postId, likes }: PostOptionsProps) => {
       setIsLiked(!isLiked);
       const deleteResult: boolean = await deleteLike(postId, Number(session?.user.id) ?? null);
       if(deleteResult) {
+        router.refresh();
       } else {
         setLikeCount(likeConunt + 1);
         setIsLiked(!isLiked);
         alert("いいねを解除できませんでした")
       }
+      
     } else {
       setLikeCount(likeConunt + 1)
       setIsLiked(!isLiked);
       const likeResult: boolean = await likePost(postId, Number(session?.user.id) ?? null);
       if(likeResult) {
+        router.refresh();
       } else {
         setLikeCount(likeConunt - 1)
         setIsLiked(!isLiked);

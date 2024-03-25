@@ -175,7 +175,7 @@ const UserButton = ({ userId }: UserButtonProps) => {
               </p>
               { isCheckForDelete 
               ?
-                isLoadingForTransition ? <MiniLoading /> : <button className="hover:underline">本当に削除する</button>
+                isLoadingForTransition ? <MiniLoading /> : <button className="hover:underline" onClick={handleDeleteUser}>本当に削除する</button>
               :
                 <></>
               }

@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { PostType } from "@/types";
 import Link from "next/link";
 import MoreButton from "./moreButton";
-import { supabase } from "@/supabase";
 import Image from "next/image";
 import initial_avatar from "../../../public/initial_avatar.png";
 import PostPhoto from "./postPhoto";
@@ -24,8 +23,8 @@ const PostContent = async ({ post, from }: PostContentProps) => {
       <div className="flex justify-start my-1">
         <div className="relative h-[35px] w-[35px] mr-3">
           { auther.avatar && autherAvatarUrl
-          ? <Image src={autherAvatarUrl} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
-          : <Image src={initial_avatar} alt="avatar" fill objectFit="cover" className="border rounded-full"/>
+          ? <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/profile/${auther.id}`}><Image src={autherAvatarUrl} alt="avatar" fill objectFit="cover" className="border rounded-full"/></Link>
+          : <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/profile/${auther.id}`}><Image src={initial_avatar} alt="avatar" fill objectFit="cover" className="border rounded-full"/></Link>
           }
         </div>
         <p className="font-base text-lg hover:underline"><Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/profile/${auther.id}`}>{auther.username}</Link></p>

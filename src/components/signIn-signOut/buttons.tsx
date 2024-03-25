@@ -17,7 +17,7 @@ export const SigninButton = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInputError, setIsInputError] = useState<boolean>(false);
-  const [boxWidth, setBoxWidth] = useState<string>("4/12");
+  const [boxWidth, setBoxWidth] = useState<string>("1/2 mx-[30%]");
   const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export const SigninButton = () => {
         setBoxWidth("1/2");
       }
     }
-  })
+  }, [])
 
   const onSubmitFunc: SubmitHandler<Inputs> = async (data) => {
     setIsInputError(false);

@@ -34,7 +34,7 @@ const PostShareModal = ({ closeModalFunc, userId }: PostShareModalProps) => {
       toast.error("Error", { id: "postFromModal"});//トースト
     }
     closeModalFunc();
-    router.push("/");
+    // router.push("/");
     router.refresh();
   };
 

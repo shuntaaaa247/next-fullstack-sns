@@ -54,8 +54,10 @@ const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
   });
 
   const onSubmit: SubmitHandler<ProfileInputsType> = async (data) => {
+    setIsLoading(true);
     await editMyProfile(data.username, data.introduction, file, user.avatar);
     closeModal();
+    setIsLoading(false);
     router.push(`/profile/${signedInUserId}`)
     router.refresh();
   }
@@ -78,7 +80,7 @@ const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
       }
     }
     setIsLoading(false);
-  });
+  }, []);
 
 
   useEffect(() => {
@@ -118,7 +120,9 @@ const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
       if(result) {
         setFollowersLength(followersLength - 1);
         setIsFollowing(!isFollowing)
-        toast.success("Success", { id: "unfollowing" })
+        toast.success("Success", { id: "unfollowing" });
+        router.push(`/profile/${user.id}`)
+        router.refresh();
       } else {
         toast.error("Error", { id: "unfollowing" })
       }
@@ -129,6 +133,8 @@ const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
         setFollowersLength(followersLength + 1);
         setIsFollowing(!isFollowing);
         toast.success("Success", { id: "following"});
+        router.push(`/profile/${user.id}`)
+        router.refresh();
       } else {
         toast.error("Error", { id: "following"});
       }
@@ -246,11 +252,16 @@ const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
                 {errors.introduction?.message}
                 </p>
               </div>
-              <button 
-              className="ml-auto px-3 my-4 rounded-full border-2 border-blue-500 text-lg text-blue-500 hover:bg-blue-500 hover:text-white"
-              >
-                Save
-              </button>
+              { isLoading
+              ?
+                <MiniLoading />
+              :
+                <button 
+                className="ml-auto px-3 my-4 rounded-full border-2 border-blue-500 text-lg text-blue-500 hover:bg-blue-500 hover:text-white"
+                >
+                  Save
+                </button>
+              }
             </form>
           </div>
         </div>
