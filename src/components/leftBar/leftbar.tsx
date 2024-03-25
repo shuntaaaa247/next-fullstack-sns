@@ -68,21 +68,26 @@ const LeftBar = ({ userId }: LeftBarProps) => {
     setIsOpen(false)
   }
 
+  const goHome = () => {
+    router.push("/");
+    router.refresh();
+  }
+
   return(
     <>
       <div className="h-screen w-0 sm:w-1/4 md:w-3/12 fixed left-0 border-r-2 flex flex-col invisible sm:visible">
         <div className='flex justify-center'>
-          <button className="my-5 text-2xl font-medium">NEXT FULLSTACK SNS</button>
+          <button className="my-5 text-2xl font-medium" onClick={goHome}>NEXT FULLSTACK SNS</button>
         </div>
         <div className="flex justify-start md:ml-[25%]">
           <div className='flex flex-col sm: mx-auto md:mx-0'>
             { page === "" 
             ? 
-              <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push("/")}>
+              <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={goHome}>
                 <HomeIcon fontSize='large'/>
                 <span className='flex ml-1 text-2xl my-auto font-medium'>Home</span>
               </button>
-            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push("/")}>
+            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={goHome}>
                 <HomeOutlinedIcon fontSize='large'/>
                 <span className='flex ml-1 text-2xl font-medium'>Home</span>
               </button>
@@ -133,8 +138,8 @@ const LeftBar = ({ userId }: LeftBarProps) => {
       <>
         <div className="w-full flex justify-around fixed bottom-0 py-3 bg-white border-t z-10 visible sm:invisible">
           { page === ""
-          ? <button onClick={() => router.push("/")}><HomeIcon fontSize='large'/></button>
-          : <button onClick={() => router.push("/")}><HomeOutlinedIcon fontSize='large'/></button>
+          ? <button onClick={goHome}><HomeIcon fontSize='large'/></button>
+          : <button onClick={goHome}><HomeOutlinedIcon fontSize='large'/></button>
           }
           { page === "search"
           ? <button onClick={() => router.push("/search")}><SavedSearchIcon fontSize='large'/></button>
@@ -154,7 +159,7 @@ const LeftBar = ({ userId }: LeftBarProps) => {
       <>
         <div className='w-full h-[60px] flex fixed top-0 bg-white border-b z-10 visible sm:invisible'>
           <UserButton userId={userId}/>
-          <span className='ml-auto text-lg font-semibold my-auto mr-5'>NEXT FULLSTACK SNS</span>
+          <span className='ml-auto text-lg font-semibold my-auto mr-5' onClick={goHome}>NEXT FULLSTACK SNS</span>
         </div>
       </>
     </>
