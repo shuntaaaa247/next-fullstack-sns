@@ -98,7 +98,9 @@ export const SigninButton = () => {
         <div className="flex justify-center">
           <Link href={"/register"} className="text-blue-500 hover:underline mt-5">新規アカウントを作成しますか？</Link>
         </div>
-        <button className="text-blue-500 hover:underline mt-5" onClick={() => alert("以下の入力値でサインインしてください。\nemail:guest@guest.com\npassword:guest")}>ゲスト用アカウントでサインインしますか？</button>
+        <div className="flex justify-center">
+          <button className="text-blue-500 hover:underline mt-5" onClick={() => alert("以下の入力値でサインインしてください。\nemail:guest@guest.com\npassword:guest")}>ゲスト用アカウントでサインインしますか？</button>
+        </div>
       </form>
     </div>
   );
