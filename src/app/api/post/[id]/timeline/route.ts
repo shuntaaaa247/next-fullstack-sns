@@ -23,7 +23,7 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
   try {
     await prisma.$connect();
     let timelinePosts: ApiPostType[] = [];
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${targetId}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${targetId}`, {cache: "no-store"});
     const resJson = await res.json();
     const following = resJson.user.following;
 
@@ -57,7 +57,10 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
 
     timelinePosts.sort(
       (x, y) => (y.createdAt.getTime()) - (x.createdAt.getTime()),
-    )
+    );
+
+    console.log("apiルートです(api/post/[id]/timeline");
+    console.log(timelinePosts)
     
     return NextResponse.json({ message: "取得成功", timelinePosts: timelinePosts }, { status: 200 });
   } catch(err) {
