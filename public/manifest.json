@@ -1,0 +1,32 @@
+{
+    "theme_color": "white",
+    "background_color": "white",
+    "display": "standalone",
+    "scope": "/next-fullstack-sns/",
+    "start_url": "/",
+    "name": "Next Fullstack SNS",
+    "short_name": "Next",
+    "description": "This SNS was created using only Next.js.",
+    "icons": [
+        {
+            "src": "/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-256x256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-384x384.png",
+            "sizes": "384x384",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
