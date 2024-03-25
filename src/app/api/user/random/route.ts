@@ -33,7 +33,8 @@ export const GET = async(req: NextRequest) => {
     const allUsers = await prisma.user.findMany({});
     const randomUsers = [];
     for (const i of randamIndexes) {
-      randomUsers.push(allUsers[i]);
+      const { password, ...other } = allUsers[i];
+      randomUsers.push(other);
     }
 
     return NextResponse.json({ message: "取得成功", randomUsers: randomUsers }, { status: 200})

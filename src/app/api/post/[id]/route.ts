@@ -9,10 +9,11 @@ import type { ApiPostType } from "@/types";
 const prisma = new PrismaClient();
 
 export const GET = async (req: NextRequest, { params }: { params: Params }) => {
-  const session = await getServerSession(options);
-  if(!session) {
-    return NextResponse.json({ message: "認証されていません。ログインしてください" }, { status: 401 });
-  }
+  
+  // const session = await getServerSession(options);
+  // if(!session) {
+  //   return NextResponse.json({ message: "認証されていません。ログインしてください" }, { status: 401 });
+  // }
   
   try {
     await prisma.$connect();

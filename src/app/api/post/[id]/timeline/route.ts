@@ -10,10 +10,14 @@ const prisma = new PrismaClient();
 
 export const GET = async (req: Request, { params }: { params: Params }) => {
   const targetId: string = params.id;
-  const session = await getServerSession(options);
-  // return NextResponse.json({ session: session }, { status: 200 });
-  if(!session?.user.id || !targetId || Number(session.user.id) !== Number(targetId)) {
-    return NextResponse.json({ message: "認証されていません"}, { status: 401 });
+
+  // const session = await getServerSession(options);
+  // if(!session?.user.id || !targetId || Number(session.user.id) !== Number(targetId)) {
+  //   return NextResponse.json({ message: "認証されていません"}, { status: 401 });
+  // }
+
+  if(!targetId) {
+    return NextResponse.json({ message: "目的のユーザーのIDを送信してください" }, { status: 400 })
   }
 
   try {

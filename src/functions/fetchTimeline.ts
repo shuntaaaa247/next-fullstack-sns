@@ -7,7 +7,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 export const fetchTimeline = async (userId: string): Promise<PostType[]> => {
   const res = await fetch(`${baseUrl}/api/post/${userId}/timeline`, {
-    headers: headers() //バックエンド(GETメソッド)でSession情報取得するには、headers: headers()を追加
+    // headers: headers() //バックエンド(GETメソッド)でSession情報取得するには、headers: headers()を追加 <-vercelでは使用できなかった。
   });
   const json = await res.json();
   const timelinePosts: PostType[] = json.timelinePosts;
