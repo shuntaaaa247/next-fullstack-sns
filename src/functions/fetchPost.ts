@@ -3,7 +3,7 @@ import { PostType } from "@/types";
 import { headers } from "next/headers";
 
 const fetchPost = async (id: string) => {
-  const res = await fetch(`http://localhost:3000/api/post/${id}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post/${id}`, {
     headers: headers()
   });
   if (!res.ok) {

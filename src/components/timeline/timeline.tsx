@@ -13,7 +13,6 @@ const Timeline = async ({ userId }: TimelineProps) => {
   const session = await getServerSession(options);
   const user = await fetchUser(String(session?.user.id));
   let timelinePosts: PostType[];
-  // const timelinePosts: PostType[] = await fetchTimeline(String(session?.user.id));
   if(userId) { //プロフィール画面用用タイムライン
     timelinePosts = await fetchProfileTimeline(userId);
   } else { //ホーム画面用タイムライン
