@@ -38,7 +38,6 @@ const RightBarContent = async () => {
         : <></>
         }
       <div className="h-3"></div>
-      {/* {window.outerWidth} */}
       </div>
     </>
   )
