@@ -185,7 +185,7 @@ const LeftBar = ({ userId }: LeftBarProps) => {
           <UserButton userId={userId}/>
           {isPwa 
           ? 
-            isReloading ? <div className='my-auto'><MiniLoading /></div> : <button className='my-auto p-1 hover:bg-slate-100 rounded-full' onClick={reload}><ReplayIcon /></button>  // リロード中のローディングアニメーションは表示されなかった。
+            isReloading ? <div className='my-auto'><MiniLoading /></div> : <button className='my-auto px-2 py-1 hover:bg-slate-100 rounded-full' onClick={reload}><ReplayIcon /></button>  // リロード中のローディングアニメーションは表示されなかった。
           : <></>
           }
           <span className='ml-auto text-lg font-semibold my-auto mr-5 hover:cursor-pointer' onClick={goHome}>NEXT FULLSTACK SNS</span>
