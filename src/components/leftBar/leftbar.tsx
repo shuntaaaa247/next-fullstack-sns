@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import UserButton from './userButton';
 import Modal from 'react-modal'
 import PostShareModal from './postShareModal'
@@ -13,6 +13,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import SavedSearchIcon from '@mui/icons-material/SavedSearch';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import ReplayIcon from '@mui/icons-material/Replay';
+import MiniLoading from '../loading/miniLoading';
 
 type LeftBarProps = {
   userId: string
@@ -38,9 +40,15 @@ Modal.setAppElement('body') // bodyなど任意の要素に変更OK
 
 const LeftBar = ({ userId }: LeftBarProps) => {
   const pahtname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const page: string = pahtname.split("/")[1]
-  const [modalIsOpen, setIsOpen] = useState<boolean>(false)
+  const page: string = pahtname.split("/")[1];
+  const url: string = pahtname;
+  const searchText: string | null = searchParams.get("text");
+  const searchMode: string | null = searchParams.get("mode");
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [isPwa, setIsPwa] = useState<boolean>(false);
+  const [isReloading, setIsReloading] = useState<boolean>(true);
 
   useEffect(() => {
     const windowInnerWidth: number | null | undefined = window.innerWidth
@@ -55,7 +63,28 @@ const LeftBar = ({ userId }: LeftBarProps) => {
     } else {
       customStyles.content.width = "90%";
     }
-  }, [])
+
+    if(window.matchMedia('(display-mode: standalone)').matches){
+      setIsPwa(true);
+    }
+
+    setIsReloading(false);
+  }, []);
+
+  const goHome = () => {
+    router.push("/");
+    router.refresh();
+  }
+
+  const reload = () => {
+    if(page === "search") {
+      router.push(`${url}?text=${searchText ?? ""}&mode=${searchMode ?? ""}`)
+      router.refresh();
+    } else {
+      router.push(`${url}`);
+      router.refresh();
+    }
+  }
 
   function openModal() {
     setIsOpen(true)
@@ -68,11 +97,6 @@ const LeftBar = ({ userId }: LeftBarProps) => {
     setIsOpen(false)
   }
 
-  const goHome = () => {
-    router.push("/");
-    router.refresh();
-  }
-
   return(
     <>
       <div className="h-screen w-0 sm:w-1/4 md:w-3/12 fixed left-0 border-r-2 flex flex-col invisible sm:visible">
@@ -83,31 +107,31 @@ const LeftBar = ({ userId }: LeftBarProps) => {
           <div className='flex flex-col sm: mx-auto md:mx-0'>
             { page === "" 
             ? 
-              <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={goHome}>
+              <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => {router.push("/"), router.refresh()}}>
                 <HomeIcon fontSize='large'/>
                 <span className='flex ml-1 text-2xl my-auto font-medium'>Home</span>
               </button>
-            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={goHome}>
+            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => {router.push("/"), router.refresh()}}>
                 <HomeOutlinedIcon fontSize='large'/>
                 <span className='flex ml-1 text-2xl font-medium'>Home</span>
               </button>
             }
             { page === "search" 
-            ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push("/search")}>
+            ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => {router.push("/search"), router.refresh()}}>
                 <SavedSearchIcon fontSize='large' />
                 <span className='text-2xl ml-1 font-medium'>Search</span>
               </button>
-            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push("/search")}>
+            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => {router.push("/search"), router.refresh()}}>
                 <SearchOutlinedIcon fontSize='large'/>
                 <span className='text-2xl ml-1 font-medium'>Search</span>
               </button>
             }
             { page === "profile"
-            ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => router.push(`/profile/${userId}`)}>
+            ? <button className="flex my-2 px-3 py-1 rounded-full bg-blue-50" onClick={() => {router.push(`/profile/${userId}`), router.refresh()}}>
                 <PersonIcon fontSize='large'/>
                 <span className='text-2xl ml-1 font-medium'>Profile</span>
               </button>
-            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => router.push(`/profile/${userId}`)}>
+            : <button className="flex my-2 px-3 py-1 rounded-full hover:bg-blue-50" onClick={() => {router.push(`/profile/${userId}`), router.refresh()}}>
                 <PersonOutlinedIcon fontSize='large'/>
                 <span className='text-2xl ml-1 font-medium'>Profile</span>
               </button>
@@ -138,16 +162,16 @@ const LeftBar = ({ userId }: LeftBarProps) => {
       <>
         <div className="w-full flex justify-around fixed bottom-0 py-3 bg-white border-t z-10 visible sm:invisible">
           { page === ""
-          ? <button onClick={goHome}><HomeIcon fontSize='large'/></button>
-          : <button onClick={goHome}><HomeOutlinedIcon fontSize='large'/></button>
+          ? <button onClick={() => {router.push("/"), router.refresh()}}><HomeIcon fontSize='large'/></button>
+          : <button onClick={() => {router.push("/"), router.refresh()}}><HomeOutlinedIcon fontSize='large'/></button>
           }
           { page === "search"
-          ? <button onClick={() => router.push("/search")}><SavedSearchIcon fontSize='large'/></button>
-          : <button onClick={() => router.push("/search")}><SearchOutlinedIcon fontSize='large'/></button>
+          ? <button onClick={() => {router.push("/search"), router.refresh()}}><SavedSearchIcon fontSize='large'/></button>
+          : <button onClick={() => {router.push("/search"), router.refresh()}}><SearchOutlinedIcon fontSize='large'/></button>
           }
           { page === "profile"
-          ? <button onClick={() => router.push(`/profile/${userId}`)}><PersonIcon fontSize='large'/></button>
-          : <button onClick={() => router.push(`/profile/${userId}`)}><PersonOutlinedIcon fontSize='large'/></button>
+          ? <button onClick={() => {router.push(`/profile/${userId}`), router.refresh()}}><PersonIcon fontSize='large'/></button>
+          : <button onClick={() => {router.push(`/profile/${userId}`), router.refresh()}}><PersonOutlinedIcon fontSize='large'/></button>
           }
         </div>
         <button onClick={openModal} className="fixed z-10 bottom-[10%] right-5 bg-blue-500 w-16 h-16 rounded-full text-white font-semibold text-2xl hover:bg-blue-600 visible sm:invisible">
@@ -159,7 +183,12 @@ const LeftBar = ({ userId }: LeftBarProps) => {
       <>
         <div className='w-full h-[60px] flex fixed top-0 bg-white border-b z-10 visible sm:invisible'>
           <UserButton userId={userId}/>
-          <span className='ml-auto text-lg font-semibold my-auto mr-5' onClick={goHome}>NEXT FULLSTACK SNS</span>
+          {isPwa 
+          ? 
+            isReloading ? <div className='my-auto'><MiniLoading /></div> : <button className='my-auto hover:bg-slate-100 rounded-full' onClick={reload}><ReplayIcon /></button>  // リロード中のローディングアニメーションは表示されなかった。
+          : <></>
+          }
+          <span className='ml-auto text-lg font-semibold my-auto mr-5 hover:cursor-pointer' onClick={goHome}>NEXT FULLSTACK SNS</span>
         </div>
       </>
     </>
