@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 const fetchPost = async (id: string) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post/${id}`, {
     // headers: headers() <- vercelでは使用できなかった。
+    cache: "no-store"
   });
   if (!res.ok) {
     return null;

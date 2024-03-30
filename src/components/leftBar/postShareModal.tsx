@@ -1,21 +1,26 @@
 import { createPost } from "@/functions/createPost";
+import { createReply } from "@/functions/createReply";
 import { PostInputsType, postInputs } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast"; 
 import { useRouter } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import PhotoSizeSelectActualOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActualOutlined';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import { revalidatePath } from "next/cache";
 
 type PostShareModalProps = {
   closeModalFunc: () => void,
-  userId: string
+  userId: string,
+  replyToId: string | null
 }
 
-const PostShareModal = ({ closeModalFunc, userId }: PostShareModalProps) => {
+const PostShareModal = ({ closeModalFunc, userId, replyToId }: PostShareModalProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const maxDescriptionLength = 140;
   const [descriptionLength, setDescriptionLength] = useState<number>(0);
   const [fileOnModal, setFileOnModal] = useState<File | null>(null);
@@ -27,7 +32,7 @@ const PostShareModal = ({ closeModalFunc, userId }: PostShareModalProps) => {
 
   const onSubmit: SubmitHandler<PostInputsType> = async (data) => { //zodのバリデーションが通った時だけ実行される
     toast.loading("Sending a post", { id: "postFromModal"});//トースト
-    const isSuccess = await createPost(userId, data.description, fileOnModal);
+    const isSuccess = replyToId ? await createReply(userId, data.description, fileOnModal, replyToId) : await createPost(userId, data.description, fileOnModal);
     if(isSuccess) {
       toast.success("Success", { id: "postFromModal"});//トースト
     } else {
@@ -35,7 +40,7 @@ const PostShareModal = ({ closeModalFunc, userId }: PostShareModalProps) => {
     }
     closeModalFunc();
     // router.push("/");
-    router.refresh();
+    router.refresh()
   };
 
   const handleChangeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +56,7 @@ const PostShareModal = ({ closeModalFunc, userId }: PostShareModalProps) => {
   return(
     <form className="h-[88%] flex-col" onSubmit={handleSubmit(onSubmit)}> 
       <Toaster />
-      <textarea id="description" placeholder="what is happening?!" 
+      <textarea id="description" placeholder={ replyToId ? "Reply here" : "what is happening?!"} 
       className="w-full h-5/6 px-3 border-0 resize-none focus:outline-0"
       {...register("description")} /*registerの引数をzodで定義したスキーマのプロパティにすると、そのプロパティのバリデーションが適用される*/
       onChange={(e) => setDescriptionLength(e.target.value.length)}
@@ -83,7 +88,7 @@ const PostShareModal = ({ closeModalFunc, userId }: PostShareModalProps) => {
             : <></>
             }
         </div>
-        <button className="bg-blue-500 text-white text-md font-semibold rounded-2xl px-4 py-1 ml-auto mr-3 hover:bg-blue-600">Post</button>
+        <button className="bg-blue-500 text-white text-md font-semibold rounded-2xl px-4 py-1 ml-auto mr-3 hover:bg-blue-600">{ replyToId ? "Reply" : "Post"}</button>
       </div>
     </form>
   )

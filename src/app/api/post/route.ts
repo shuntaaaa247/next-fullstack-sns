@@ -59,7 +59,8 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       data: {
         description: description,
         autherId: autherId,
-        photo: photo
+        photo: photo,
+        isReply: false,
       }
     })
     return NextResponse.json({ message: "投稿完了", post: post }, { status: 200 })
@@ -89,7 +90,8 @@ export const DELETE = async (req: NextRequest) => {
         id: Number(postId)
       },
       include: {
-        likes: true
+        likes: true,
+        replies: true,
       }
     })
     if(!post){

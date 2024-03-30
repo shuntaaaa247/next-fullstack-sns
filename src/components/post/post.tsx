@@ -14,7 +14,7 @@ const Post = ({ post, from }: PostProps) => {
     return (
       <div className="pl-3 border-b">
         <PostContent post={post} from={from}/>
-        <PostOptions postId={post.id} likes={post.likes}/>
+        <PostOptions postId={post.id} likes={post.likes} replies={post.replies}/>
       </div>
     )
   } else if(from === "/post_detail/[id]") {
@@ -22,7 +22,10 @@ const Post = ({ post, from }: PostProps) => {
       <div className="pl-3 border-b">
         <div className="mx-5">
           <PostContent post={post} from={from}/>
-          <PostOptions postId={post.id} likes={post.likes}/>
+          <div className="border-t mt-5 py-1">
+            <div className="h-1"></div>
+            <PostOptions postId={post.id} likes={post.likes} replies={post.replies}/>
+          </div>
         </div>
       </div>
     )
@@ -32,7 +35,7 @@ const Post = ({ post, from }: PostProps) => {
         <SessionProvider>
           <SearchedPostContent post={post}/>
         </SessionProvider>
-        <PostOptions postId={post.id} likes={post.likes}/>
+        <PostOptions postId={post.id} likes={post.likes} replies={post.replies}/>
       </div>
     )
   } else {

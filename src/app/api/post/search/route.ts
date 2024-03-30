@@ -25,7 +25,8 @@ export const GET = async (req: NextRequest) => {
         })),
       },
       include: {
-        likes: true
+        likes: true,
+        replies: true
       }
     })
 

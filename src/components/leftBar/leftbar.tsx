@@ -152,7 +152,7 @@ const LeftBar = ({ userId }: LeftBarProps) => {
           <div className='flex h-[12%]'>
             <button  onClick={closeModal}><ClearIcon/></button>
           </div>
-            <PostShareModal closeModalFunc={closeModal} userId={userId}/>
+            <PostShareModal closeModalFunc={closeModal} userId={userId} replyToId={null}/>
         </Modal>
         
       </div>

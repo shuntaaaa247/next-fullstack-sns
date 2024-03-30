@@ -42,8 +42,13 @@ const ProfileContent = async ({ userId }: ProfileContentProps) => {
         { user && session ? 
         <>
           <ProfileInfo user={user} avaterUrl={avatarUrl} signedInUserId={Number(session?.user.id)} />
-            <Suspense fallback={<Loading />}>
-          <Timeline userId={user.id}/>
+          <div className="flex justify-around border-b">
+            <span className="w-1/3 py-1 text-lg font-medium text-center border-b-2 border-b-blue-500 hover:bg-slate-100">Posts</span>
+            <span className="w-1/3 py-1 text-lg font-medium text-center hover:bg-slate-100">Replies</span>
+            <span className="w-1/3 py-1 text-lg font-medium text-center hover:bg-slate-100">Likes</span>
+          </div>
+          <Suspense fallback={<Loading />}>
+            <Timeline userId={user.id}/>
           </Suspense>
         </> :
         <p>ユーザーが見つかりませんでした</p> 

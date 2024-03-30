@@ -164,7 +164,7 @@ const ProfileInfo = ({ user, signedInUserId, avaterUrl }: ProfileInfoProps) => {
   }
 
   return(
-    <div className="py-3 border-b">
+    <div className="py-3 ">
       <div className="ml-5">
         <div className="flex justify-between">
           { isLoading 

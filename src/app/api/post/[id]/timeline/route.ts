@@ -1,8 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
-import { getServerSession } from "next-auth";
-import { options } from "@/options";
 import type { ApiPostType, FollowType } from "@/types";
 
 //インスタンスを作成
@@ -32,7 +30,8 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
         autherId: Number(targetId)
       },
       include: {
-        likes: true
+        likes: true,
+        replies: true,
       },
       orderBy: {
         createdAt: 'desc' 
@@ -46,7 +45,8 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
           autherId: Number(follow.followingId)
         },
         include: {
-          likes: true
+          likes: true,
+          replies: true
         },
         orderBy: { 
           createdAt: 'desc' 

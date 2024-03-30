@@ -37,6 +37,10 @@ model Post {
   likes Like[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isReply Boolean?
+  replies Post[] @relation("PostToPost")
+  repliedTo Post? @relation("PostToPost", fields: [repliedToId], references: [id]) // 返信先のポストを示すためのリレーションフィールド
+  repliedToId Int? // 返信先ポストのID
 }
 
 model Follow {

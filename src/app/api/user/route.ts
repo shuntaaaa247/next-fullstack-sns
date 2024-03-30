@@ -31,12 +31,10 @@ export const DELETE = async (req: NextRequest) => {
         autherId: Number(userId)
       },
       include: {
-        likes: true
+        likes: true,
+        replies: true
       }
     });
-
-    // console.log("あああああああああ")
-    // console.log(posts);
 
     // return NextResponse.json({ message: "デバッグ用", posts: posts }, { status: 200 })
 

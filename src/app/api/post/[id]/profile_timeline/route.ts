@@ -17,10 +17,26 @@ export const GET = async (req: Request, { params }: { params: Params }) => {
     await prisma.$connect()
     const profileTimelinePosts: ApiPostType[] | null = await prisma.post.findMany({
       where: {
-        autherId: Number(targetId)
+        AND: [
+          {
+            autherId: Number(targetId)  
+          },
+          {
+            OR:[
+              {
+                isReply: false
+              },
+              {
+                isReply: null
+              }
+            ]
+          }
+        ]
+        // autherId: Number(targetId)
       },
       include: {
-        likes: true
+        likes: true,
+        replies: true
       },
       orderBy: { 
         createdAt: 'desc' 

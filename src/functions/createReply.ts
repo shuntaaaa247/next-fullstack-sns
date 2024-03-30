@@ -1,7 +1,7 @@
 import { supabase } from "@/supabase";
 import { v4 as uuidv4 } from 'uuid'
 
-export const createPost = async (userId: string, description: string, file: File | null | undefined): Promise<boolean> => {
+export const createReply = async (userId: string, description: string, file: File | null | undefined, repliedToId: string): Promise<boolean> => {
   let fileName: string = "";
   if(file) {
     fileName = `img_${uuidv4()}_${file.name}`;
@@ -14,15 +14,16 @@ export const createPost = async (userId: string, description: string, file: File
     }
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/post/reply`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json", 
     },
     body: JSON.stringify({
       description: description,
-      autherId: userId,
+      autherId: Number(userId),
       photo: fileName ?? null,
+      repliedToId: Number(repliedToId)
     })
   });
 

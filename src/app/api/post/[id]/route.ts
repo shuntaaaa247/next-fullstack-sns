@@ -22,12 +22,20 @@ export const GET = async (req: NextRequest, { params }: { params: Params }) => {
         id: Number(params.id)
       },
       include: {
-        likes: true
+        likes: true,
+        // replies: true
+        replies: {
+          include: {
+            likes: true,
+            replies: true
+          }
+        }
       }
     })
     if (!post) {
       return NextResponse.json({ message: "投稿が見つかりませんでした" }, { status: 404 });
     }
+
     return NextResponse.json({ message: "投稿取得完了", post: post }, { status: 200 })
   } catch (err) {
     console.log(err);

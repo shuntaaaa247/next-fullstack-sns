@@ -68,9 +68,19 @@ export type PostType = {
   likes: LikeType[],
   createdAt: Date,
   updatedAt: Date,
+  isReply: boolean | null,
+  replies: PostType[] | null,
+  repliedToId: number | null
 }
 
-export type ApiPostType = Omit<PostType, "photoUrl">
+// type _ApiPostType = Omit<PostType, "replies"> & {
+//   replies: ApiPostType[]
+// }
+
+export type ApiPostType = Omit<PostType, "photoUrl" | "replies"> & {
+  replies: any[] | null // <-エラー回避のため仕方なくany...時間は有限...
+}
+// export type ApiPostType = Omit<PostType, "photoUrl">
 
 export type FollowType = {
   followerId: Number,

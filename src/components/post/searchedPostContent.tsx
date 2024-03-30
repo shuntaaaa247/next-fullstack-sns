@@ -65,6 +65,14 @@ const SearchedPostContent = ({ post }: SearchedPostContentProps) => {
 
   return (
     <div className="mb-1">
+      {post.isReply
+      ? 
+        post.repliedToId
+        ? <Link href={`/post_detail/${post.repliedToId}`} className="text-sm text-slate-500 hover:underline">ポストid:{post.repliedToId}への返信</Link>
+        : <span className="text-sm text-slate-500">返信先の投稿は削除されました</span>
+      : <></>
+      }
+
       <div className="flex justify-start my-1">
         <div className="relative h-[35px] w-[35px] mr-3">
           { isAvatarLoading 
