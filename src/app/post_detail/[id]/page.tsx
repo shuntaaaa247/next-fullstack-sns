@@ -57,7 +57,7 @@ const PostDetailContent = async ({ postId }: PostDetailContentProps) => {
           : <></>
         }
         </div>
-        <div className="border-2">
+        <div className="border-2 border-x-4 sm:border-x-2">
         { post
           ? <Post post={post} from={"/post_detail/[id]"}/>
           : <h2>このページはご覧になれません</h2>
@@ -67,6 +67,7 @@ const PostDetailContent = async ({ postId }: PostDetailContentProps) => {
         ? 
         <>
           <span className="text-xl font-medium border-b mt-2 pb-2 px-4">Replies</span>
+          <div className="mb-[100px]">
           {(post.replies).map((reply: PostType) => {
             let photoUrl: string | null = null;
             if(reply && reply.photo) {
@@ -83,10 +84,16 @@ const PostDetailContent = async ({ postId }: PostDetailContentProps) => {
               </div>
             )
           })}
+          </div>
         </>
         : <>replyなし</>
         }
-        <div className="h-[100px] sm:h-1/5"></div>
+        {/* なんかうまくいかなくてこれで無理やり底上げするしかなかった */}
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
       </div>
       <RightBar />
     </main>
