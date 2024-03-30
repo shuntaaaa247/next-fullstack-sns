@@ -83,10 +83,10 @@ const PostDetailContent = async ({ postId }: PostDetailContentProps) => {
               </div>
             )
           })}
-          <div className="h-[100px] sm:h-1/5"></div>
         </>
         : <>replyなし</>
         }
+        <div className="h-[100px] sm:h-1/5"></div>
       </div>
       <RightBar />
     </main>
