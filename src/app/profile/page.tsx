@@ -10,11 +10,10 @@ import Loading from "@/components/loading/Loading";
 import ProfileInfo from "@/components/timeline/profileInfo";
 import Link from "next/link";
 
-const Profile = async ({ params }: { params: Params }) => {
+const Profile = async ({ searchParams }: { searchParams: {id: string, mode: string} }) => {
   return(
     <Suspense fallback={<Loading />}>
-      {params.mode}
-      <ProfileContent userId={ params.id } />
+      <ProfileContent userId={ searchParams.id } mode={searchParams.mode}/>
     </Suspense>
   )
 }
@@ -22,10 +21,11 @@ const Profile = async ({ params }: { params: Params }) => {
 export default Profile
 
 type ProfileContentProps = {
-  userId: string
+  userId: string,
+  mode: string
 }
 
-const ProfileContent = async ({ userId }: ProfileContentProps) => {
+const ProfileContent = async ({ userId, mode }: ProfileContentProps) => {
   const session = await getServerSession(options);
   const { user, avatarUrl } = await fetchUser(userId);
 
@@ -45,12 +45,12 @@ const ProfileContent = async ({ userId }: ProfileContentProps) => {
         <>
           <ProfileInfo user={user} avaterUrl={avatarUrl} signedInUserId={Number(session?.user.id)} />
           <div className="flex justify-around border-b">
-            <Link href={`/profile?id=${userId}`} className="w-1/3 py-1 text-lg font-medium text-center border-b-2 border-b-blue-500 hover:bg-slate-100">Posts</Link>
-            <Link href={`/profile?id=${userId}&mode=with_replies`} className="w-1/3 py-1 text-lg font-medium text-center hover:bg-slate-100">Replies</Link>
-            <Link href={`/profile?id=${userId}&mode=with_likes`} className="w-1/3 py-1 text-lg font-medium text-center hover:bg-slate-100">Likes</Link>
+            <Link href={`/profile?id=${userId}`} className={`w-1/3 py-1 text-lg font-medium text-center hover:bg-slate-100 ${ mode !== "with_replies" && mode !== "with_likes" ? "border-b-2 border-b-blue-500" : ""} `}>Posts</Link>
+            <Link href={`/profile?id=${userId}&mode=with_replies`} className={`w-1/3 py-1 text-lg font-medium text-center hover:bg-slate-100 ${mode === "with_replies" ? "border-b-2 border-b-blue-500" : ""}`}>Replies</Link>
+            <Link href={`/profile?id=${userId}&mode=with_likes`} className={`w-1/3 py-1 text-lg font-medium text-center hover:bg-slate-100 ${mode === "with_likes" ? "border-b-2 border-b-blue-500" : ""}`}>Likes</Link>
           </div>
           <Suspense fallback={<Loading />}>
-            <Timeline userId={user.id}/>
+            <Timeline userId={user.id} mode={mode}/>
           </Suspense>
         </> :
         <p>ユーザーが見つかりませんでした</p> 

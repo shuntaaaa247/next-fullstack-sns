@@ -49,3 +49,46 @@ export const fetchProfileTimeline = async (userId: string): Promise<PostType[]> 
   }
   return profileTimelinePosts
 }
+
+export const fetchProfileReplies = async (userId: string): Promise<PostType[]> => {
+  const res = await fetch(`${baseUrl}/api/post/${userId}/profile_timeline/replies`);
+  const json = await res.json();
+  const profileReplies: PostType[] = json.profileReplies;
+
+  if(!profileReplies) {
+    return []
+  }
+
+  for (const reply of profileReplies) {
+    if(reply.photo) {
+      const { data } = supabase
+        .storage
+        .from("photos")
+        .getPublicUrl(reply.photo)
+      reply.photoUrl = data.publicUrl
+    }
+  }
+  return profileReplies;
+}
+
+export const fetchProfileLikePosts = async (userId: string): Promise<PostType[]> => {
+  const res = await fetch(`${baseUrl}/api/post/${userId}/profile_timeline/likes`);
+  const json = await res.json();
+  const profileLikePosts: PostType[] = json.profileLikePosts;
+
+  if(!profileLikePosts) {
+    return []
+  }
+
+  for (const reply of profileLikePosts) {
+    if(reply.photo) {
+      const { data } = supabase
+        .storage
+        .from("photos")
+        .getPublicUrl(reply.photo)
+      reply.photoUrl = data.publicUrl
+    }
+  }
+  return profileLikePosts;
+
+}

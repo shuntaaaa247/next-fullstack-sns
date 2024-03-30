@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation';
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Toaster, toast } from "react-hot-toast"; 
 import Modal from 'react-modal'
 import deletePost from '@/functions/deletePost';
@@ -94,6 +93,7 @@ export default MoreButton
 const MorePostOptionsModal = ({ postId }: MorePostOptionsModalProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams()
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null)
 
@@ -103,7 +103,13 @@ const MorePostOptionsModal = ({ postId }: MorePostOptionsModalProps) => {
     toast.loading("Deleting a post", { id: "deletePost"});//トースト
     if(result) {
       toast.success("Success", { id: "deletePost"});//トースト
-      router.push(`${pathname}`);
+      if(pathname === "/profile") {
+        const id: string | null = searchParams.get("id");
+        const mode: string | null = searchParams.get("mode");
+        router.push(`${pathname}?id=${id}&mode=${mode}`)
+      } else {
+        router.push(`${pathname}`);
+      }
       router.refresh()
     } else {
       toast.error("Error", { id: "post"});//トースト

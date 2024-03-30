@@ -2,19 +2,26 @@ import { options } from "@/options";
 import { getServerSession } from "next-auth";
 import Post from "@/components/post/post";
 import fetchUser from "@/functions/fetchUser";
-import { fetchTimeline, fetchProfileTimeline } from "@/functions/fetchTimeline";
+import { fetchTimeline, fetchProfileTimeline, fetchProfileReplies, fetchProfileLikePosts } from "@/functions/fetchTimeline";
 import type { PostType } from "@/types";
 
 type TimelineProps = {
-  userId?: string | null
+  userId?: string | null,
+  mode?: string | null,
 }
 
-const Timeline = async ({ userId }: TimelineProps) => {
+const Timeline = async ({ userId, mode }: TimelineProps) => {
   const session = await getServerSession(options);
   const user = await fetchUser(String(session?.user.id));
   let timelinePosts: PostType[];
   if(userId) { //プロフィール画面用用タイムライン
-    timelinePosts = await fetchProfileTimeline(userId);
+    if(mode === "with_replies") {
+      timelinePosts = await fetchProfileReplies(userId);
+    } else if(mode === "with_likes") {
+      timelinePosts = await fetchProfileLikePosts(userId);
+    } else {
+      timelinePosts = await fetchProfileTimeline(userId);
+    }
   } else { //ホーム画面用タイムライン
     timelinePosts = await fetchTimeline(String(session?.user.id));
   }
